@@ -1,0 +1,8 @@
+# Local Codex context may contain personal goals or preferences.
+.codex/LOCAL_CONTEXT.md
+
+# Python local environments and caches.
+.venv/
+__pycache__/
+.pytest_cache/
+.ruff_cache/
