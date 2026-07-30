@@ -56,3 +56,19 @@ Pydantic rejects empty evidence bundles, duplicate evidence or fact IDs,
 invalid fact value types, timezone-naive collection times, and conflicts with
 missing, self-referencing, unrelated, or equal-valued facts. These deterministic
 checks do not call an LLM and do not make a refund decision.
+
+## Persistence repository
+
+`SqliteRepository` stores one case, evidence snapshot, and investigation record
+as a single transaction. SQLAlchemy records remain private to the persistence
+adapter: callers provide and receive the same validated Pydantic domain models.
+
+SQLite foreign-key checks reject broken ownership references. Duplicate
+identifiers become an explicit `RecordConflictError`, missing records become
+`RecordNotFoundError`, and mismatched case/evidence input becomes
+`RepositoryInputError`. If any child write fails, the complete transaction is
+rolled back rather than leaving a partial investigation that looks successful.
+
+The current repository is deliberately synchronous and small. Schema migration,
+HTTP APIs, tool traces, Agent execution, and policy retrieval remain later
+Roadmap work.
