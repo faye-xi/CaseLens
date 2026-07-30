@@ -1,6 +1,6 @@
 # CaseLens
 
-> **Work in Progress — V0.1 Day 0 complete**
+> **Work in Progress — V0.1 Day 1 complete**
 
 CaseLens is an auditable e-commerce dispute review agent and policy regression lab.
 
@@ -16,6 +16,7 @@ How can an agent that operates business tools remain verifiable, reviewable, and
 - Pydantic case model with structured validation.
 - Timezone-aware dispute timestamps.
 - Deterministic missing-evidence detection for refund records.
+- Structured investigation-readiness assessment for refund-not-received cases.
 - Automated pytest coverage and Ruff checks.
 
 ## Planned for V0.1
