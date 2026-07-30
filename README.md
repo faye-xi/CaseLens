@@ -1,6 +1,6 @@
 # CaseLens
 
-> **Work in Progress — V0.1 Day 1 complete**
+> **Work in Progress — V0.1 Day 2 complete**
 
 CaseLens is an auditable e-commerce dispute review agent and policy regression lab.
 
@@ -17,11 +17,13 @@ How can an agent that operates business tools remain verifiable, reviewable, and
 - Timezone-aware dispute timestamps.
 - Deterministic missing-evidence detection for refund records.
 - Structured investigation-readiness assessment for refund-not-received cases.
+- Auditable fact and evidence records with explicit missing items and conflicts.
+- Deterministic evidence status: complete, incomplete, or conflicted.
 - Automated pytest coverage and Ruff checks.
 
 ## Planned for V0.1
 
-- Deterministic domain models for four dispute types.
+- Deterministic domain models for the remaining three dispute types.
 - Read-only order, payment, logistics, and message tools.
 - Single-agent investigation with structured tool calling.
 - Time-sensitive, versioned policy retrieval.
