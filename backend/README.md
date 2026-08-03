@@ -70,8 +70,8 @@ identifiers become an explicit `RecordConflictError`, missing records become
 rolled back rather than leaving a partial investigation that looks successful.
 
 The current repository is deliberately synchronous and small. Schema migration,
-HTTP APIs, tool traces, Agent execution, and policy-clause retrieval remain
-later Roadmap work.
+HTTP APIs, Agent execution, and policy-clause retrieval outside the domain
+baseline remain later Roadmap work.
 
 ## Read-only business tools
 
@@ -129,6 +129,11 @@ rejected. A legitimate gap between versions is allowed, but a dispute inside
 that gap raises `PolicyVersionNotFoundError` instead of falling back to the
 nearest or latest policy.
 
-This deterministic time filter is the first stage of time-sensitive RAG. Day 7
-will search policy clauses only after the correct version has been selected;
-Day 6 does not add embeddings or semantic retrieval.
+This deterministic time filter is the first stage of time-sensitive RAG. The
+Day 7 retrieval service selects the effective version before scanning a small
+in-memory policy-clause corpus. It uses transparent token-overlap scoring with
+stable ordering and returns the clause ID, policy version, effective period,
+score, and exact original text as a citation. A missing match returns an empty
+citation tuple; a policy timeline gap remains an explicit
+`PolicyVersionNotFoundError`. Day 7 does not add embeddings, a vector database,
+Agent execution, or Tool Calling.

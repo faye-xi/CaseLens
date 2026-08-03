@@ -1,6 +1,6 @@
 # CaseLens
 
-> **Work in Progress — V0.1 Day 6 complete**
+> **Work in Progress — V0.1 Day 7 complete**
 
 CaseLens is an auditable e-commerce dispute review agent and policy regression lab.
 
@@ -35,13 +35,15 @@ How can an agent that operates business tools remain verifiable, reviewable, and
 - Immutable policy versions and deterministic timelines that select the policy
   effective when a dispute occurred, including exact transition boundaries and
   explicit failures for gaps or overlapping versions.
+- Time-first, deterministic policy-clause retrieval over a small in-memory
+  corpus, with version metadata, effective periods, stable ranking, and exact
+  original-text citations.
 - Automated pytest coverage and Ruff checks.
 
 ## Planned for V0.1
 
 - Deterministic domain models for the remaining three dispute types.
 - Single-agent investigation with structured tool calling.
-- Small-scale policy-clause retrieval with auditable source citations.
 - Human approval, controlled simulated actions, and final-state verification.
 - Golden-case evaluation and replayable traces.
 - React and TypeScript review workspace.
