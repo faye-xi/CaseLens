@@ -32,6 +32,7 @@ from caselens.tools.source import (
     InMemoryBusinessDataSource,
     RecordNotFoundError,
     SourceQueryError,
+    SourceTimeoutError,
 )
 
 NOW = datetime(2026, 7, 30, 10, 0, tzinfo=UTC)
@@ -206,6 +207,13 @@ def test_source_failure_is_not_reported_as_missing_or_empty() -> None:
 
     with pytest.raises(SourceQueryError):
         get_messages(source, MessageQuery(order_id="order-1"))
+
+
+def test_source_timeout_is_distinct_from_missing_and_query_failure() -> None:
+    source = InMemoryBusinessDataSource(timed_out_operations={"orders"})
+
+    with pytest.raises(SourceTimeoutError):
+        get_order(source, OrderQuery(order_id="order-1"))
 
 
 def test_source_copies_inputs_and_repeated_reads_are_stable() -> None:

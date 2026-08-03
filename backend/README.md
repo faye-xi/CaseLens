@@ -90,5 +90,24 @@ can be replaced by another read-only adapter without changing tool callers.
 
 A missing record raises `RecordNotFoundError`; a source query failure raises
 `SourceQueryError`. A known order may legitimately have an empty message history,
-but an unavailable history never becomes an empty successful result. Day 5 will
-translate these exceptions into the common tool error and trace protocol.
+but an unavailable history never becomes an empty successful result. A source
+timeout raises the distinct `SourceTimeoutError` signal.
+
+## Tool execution and trace protocol
+
+`execute_tool()` is the single synchronous entry point for the four read-only
+tools. It resolves the requested tool, validates its JSON arguments with the
+existing Pydantic query model, calls the Day 4 service, and always returns a
+validated `ToolExecutionResult` for expected outcomes.
+
+Failures are explicit `unknown_tool`, `invalid_input`, `not_found`, `timeout`,
+`source_error`, or safe `internal_error` values. Raw validation details, stack
+traces, and unexpected exception messages do not cross the execution boundary.
+Concrete data-source adapters own their I/O timeout and report
+`SourceTimeoutError`; the dispatcher does not create worker threads or claim to
+terminate blocked synchronous work.
+
+Every result includes an immutable in-memory trace with the call ID, requested
+tool, canonical JSON arguments, timezone-aware start and completion times,
+non-negative duration, terminal status, and error code when failed. Trace
+persistence and Agent execution remain later Roadmap work.

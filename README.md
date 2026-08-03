@@ -1,6 +1,6 @@
 # CaseLens
 
-> **Work in Progress — V0.1 Day 4 complete**
+> **Work in Progress — V0.1 Day 5 complete**
 
 CaseLens is an auditable e-commerce dispute review agent and policy regression lab.
 
@@ -27,6 +27,11 @@ How can an agent that operates business tools remain verifiable, reviewable, and
   a replaceable business-data source.
 - Explicit distinction between missing business records and source query
   failures; failed reads never become successful empty records.
+- A central synchronous dispatcher that turns tool success and expected failure
+  paths into one validated result protocol.
+- Structured `unknown_tool`, `invalid_input`, `not_found`, `timeout`,
+  `source_error`, and safe `internal_error` results with an immutable trace for
+  every attempted call.
 - Automated pytest coverage and Ruff checks.
 
 ## Planned for V0.1

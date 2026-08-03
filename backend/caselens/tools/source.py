@@ -22,6 +22,10 @@ class SourceQueryError(BusinessDataError):
     """The backing business source failed while executing a query."""
 
 
+class SourceTimeoutError(BusinessDataError):
+    """The backing business source timed out while executing a query."""
+
+
 class BusinessDataSource(Protocol):
     def get_order(self, order_id: str) -> OrderRecord: ...
 
@@ -41,12 +45,14 @@ class InMemoryBusinessDataSource:
         shipments: Iterable[ShipmentRecord] = (),
         message_histories: Iterable[MessageHistory] = (),
         failing_operations: AbstractSet[str] = frozenset(),
+        timed_out_operations: AbstractSet[str] = frozenset(),
     ) -> None:
         self._orders = _index_records(orders, "order_id")
         self._payments = _index_records(payments, "payment_id")
         self._shipments = _index_records(shipments, "order_id")
         self._message_histories = _index_records(message_histories, "order_id")
         self._failing_operations = frozenset(failing_operations)
+        self._timed_out_operations = frozenset(timed_out_operations)
 
     def get_order(self, order_id: str) -> OrderRecord:
         return self._read("orders", self._orders, order_id)
@@ -77,6 +83,8 @@ class InMemoryBusinessDataSource:
         )
 
     def _read(self, operation: str, records: dict[str, object], key: str):
+        if operation in self._timed_out_operations:
+            raise SourceTimeoutError(f"The {operation} source query timed out.")
         if operation in self._failing_operations:
             raise SourceQueryError(f"The {operation} source query failed.")
         record = records.get(key)
