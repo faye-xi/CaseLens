@@ -72,3 +72,23 @@ rolled back rather than leaving a partial investigation that looks successful.
 The current repository is deliberately synchronous and small. Schema migration,
 HTTP APIs, tool traces, Agent execution, and policy retrieval remain later
 Roadmap work.
+
+## Read-only business tools
+
+Four typed query tools now expose the external records needed by the first
+investigation flow:
+
+- order records by `order_id`;
+- payment records and their refunds by `payment_id`;
+- shipment records and chronologically ordered tracking events by `order_id`;
+- chronologically ordered message histories by `order_id`.
+
+Requests and records are immutable Pydantic models that reject blank identifiers,
+unknown fields, non-positive amounts, and timezone-naive timestamps. The initial
+`InMemoryBusinessDataSource` contains only deterministic synthetic records and
+can be replaced by another read-only adapter without changing tool callers.
+
+A missing record raises `RecordNotFoundError`; a source query failure raises
+`SourceQueryError`. A known order may legitimately have an empty message history,
+but an unavailable history never becomes an empty successful result. Day 5 will
+translate these exceptions into the common tool error and trace protocol.

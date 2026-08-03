@@ -1,6 +1,6 @@
 # CaseLens
 
-> **Work in Progress — V0.1 Day 3 complete**
+> **Work in Progress — V0.1 Day 4 complete**
 
 CaseLens is an auditable e-commerce dispute review agent and policy regression lab.
 
@@ -23,12 +23,15 @@ How can an agent that operates business tools remain verifiable, reviewable, and
   records through a SQLAlchemy repository.
 - Explicit persistence failures for missing records, conflicting identifiers,
   invalid aggregate input, and rolled-back transactions.
+- Typed, read-only order, payment/refund, logistics, and message tools backed by
+  a replaceable business-data source.
+- Explicit distinction between missing business records and source query
+  failures; failed reads never become successful empty records.
 - Automated pytest coverage and Ruff checks.
 
 ## Planned for V0.1
 
 - Deterministic domain models for the remaining three dispute types.
-- Read-only order, payment, logistics, and message tools.
 - Single-agent investigation with structured tool calling.
 - Time-sensitive, versioned policy retrieval.
 - Human approval, controlled simulated actions, and final-state verification.
