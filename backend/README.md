@@ -70,8 +70,8 @@ identifiers become an explicit `RecordConflictError`, missing records become
 rolled back rather than leaving a partial investigation that looks successful.
 
 The current repository is deliberately synchronous and small. Schema migration,
-HTTP APIs, tool traces, Agent execution, and policy retrieval remain later
-Roadmap work.
+HTTP APIs, tool traces, Agent execution, and policy-clause retrieval remain
+later Roadmap work.
 
 ## Read-only business tools
 
@@ -111,3 +111,24 @@ Every result includes an immutable in-memory trace with the call ID, requested
 tool, canonical JSON arguments, timezone-aware start and completion times,
 non-negative duration, terminal status, and error code when failed. Trace
 persistence and Agent execution remain later Roadmap work.
+
+## Policy version timeline
+
+`PolicyVersion` records a policy ID, version label, timezone-aware start, and an
+optional end. Effective periods use a half-open interval: the start instant is
+included and the end instant is excluded. When one version ends exactly as the
+next starts, a dispute at that boundary therefore selects only the new version.
+
+`PolicyTimeline.version_at()` accepts the dispute occurrence time and returns
+the unique version effective at that instant. Input order does not affect the
+selection, and timezone offsets are compared as absolute instants.
+
+Timelines reject empty input, mixed policy IDs, duplicate version labels, and
+overlapping effective periods. Invalid or timezone-naive timestamps are also
+rejected. A legitimate gap between versions is allowed, but a dispute inside
+that gap raises `PolicyVersionNotFoundError` instead of falling back to the
+nearest or latest policy.
+
+This deterministic time filter is the first stage of time-sensitive RAG. Day 7
+will search policy clauses only after the correct version has been selected;
+Day 6 does not add embeddings or semantic retrieval.
