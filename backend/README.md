@@ -131,7 +131,8 @@ terminate blocked synchronous work.
 Every result includes an immutable in-memory trace with the call ID, requested
 tool, canonical JSON arguments, timezone-aware start and completion times,
 non-negative duration, terminal status, and error code when failed. Trace
-persistence and Agent execution remain later Roadmap work.
+persistence remains later Roadmap work; the Day 10 Agent loop records model
+traces in its in-memory investigation result.
 
 ## Mock model and Tool Calling protocol
 
@@ -149,8 +150,29 @@ unauthorized calls before dispatch, then preserves Day 5's parameter
 validation, structured error codes, per-call results, and `ToolTrace` values.
 Malformed model responses stop at the model boundary rather than guessing or
 executing a partial call. This layer handles one model response and one tool
-call batch; the Agent investigation loop and maximum-step policy remain later
-Roadmap work.
+call batch. The Agent layer uses it to run a bounded investigation loop
+without adding a second tool registry or bypassing the structured failure
+protocol.
+
+## Single-agent investigation loop
+
+`caselens.agent.run_investigation()` owns one synchronous investigation run.
+It builds each `ModelRequest` from the current message protocol, advertises
+the schemas from `tool_definitions()`, and records each model trace. A
+`tool_calls` response is appended as an assistant message, executed through
+`execute_tool_calls()`, and returned to the next model step as one structured
+`ModelRole.TOOL` message per result.
+
+The loop counts one model completion as one step and defaults to a maximum of
+eight steps. A valid `STOP` returns `completed`; model invocation errors return
+`error` without tool execution; duplicate or unauthorized batches and the
+step budget return `safe_terminated`. Individual invalid-input, missing-data,
+timeout, source, and internal tool results remain explicit messages so the
+model can decide whether another read-only step is useful.
+
+Day 10 stops at an in-memory `InvestigationResult` containing the message
+history and traces. It does not build a `DecisionPacket`, execute side effects,
+request approval, or connect to a real model.
 
 ## Policy version timeline
 
