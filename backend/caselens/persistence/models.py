@@ -38,6 +38,18 @@ class InvestigationRunRow(Base):
     created_at: Mapped[str] = mapped_column(String, nullable=False)
 
 
+class CaseReviewRow(Base):
+    __tablename__ = "case_reviews"
+
+    review_id: Mapped[str] = mapped_column(String, primary_key=True)
+    case_id: Mapped[str] = mapped_column(
+        ForeignKey("cases.case_id"),
+        nullable=False,
+    )
+    created_at: Mapped[str] = mapped_column(String, nullable=False)
+    result_json: Mapped[str] = mapped_column(Text, nullable=False)
+
+
 class EvidenceRow(Base):
     __tablename__ = "evidence"
 

@@ -251,6 +251,7 @@ def test_resolution_run_rejects_verified_state_without_verification() -> None:
     with pytest.raises(ValidationError, match="verification"):
         ResolutionRun(
             workflow_id="run-1",
+            review_id="review-1",
             case_id="CASE-006",
             packet=packet,
             packet_fingerprint=packet_fingerprint(packet),
@@ -267,6 +268,7 @@ def test_resolution_run_rejects_fingerprint_not_derived_from_packet() -> None:
     with pytest.raises(ValidationError, match="fingerprint"):
         ResolutionRun(
             workflow_id="run-1",
+            review_id="review-1",
             case_id="CASE-006",
             packet=packet,
             packet_fingerprint=wrong_fingerprint,

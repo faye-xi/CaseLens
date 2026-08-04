@@ -3,7 +3,7 @@ from datetime import datetime
 from decimal import Decimal
 from pathlib import Path
 
-from sqlalchemy import String, Text, create_engine, event
+from sqlalchemy import String, Text, create_engine, event, select
 from sqlalchemy.exc import IntegrityError, SQLAlchemyError
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, sessionmaker
 
@@ -48,6 +48,7 @@ class ResolutionRunRow(ResolutionBase):
     __tablename__ = "resolution_runs"
 
     workflow_id: Mapped[str] = mapped_column(String, primary_key=True)
+    review_id: Mapped[str] = mapped_column(String, nullable=False, unique=True)
     run_json: Mapped[str] = mapped_column(Text, nullable=False)
 
 
@@ -89,9 +90,21 @@ class SqliteResolutionStore:
                     raise ResolutionConflictError(
                         f"Resolution workflow {run.workflow_id!r} already exists."
                     )
+                if (
+                    session.scalar(
+                        select(ResolutionRunRow).where(
+                            ResolutionRunRow.review_id == run.review_id
+                        )
+                    )
+                    is not None
+                ):
+                    raise ResolutionConflictError(
+                        f"Case review {run.review_id!r} already has a workflow."
+                    )
                 session.add(
                     ResolutionRunRow(
                         workflow_id=run.workflow_id,
+                        review_id=run.review_id,
                         run_json=run.model_dump_json(),
                     )
                 )
@@ -118,6 +131,20 @@ class SqliteResolutionStore:
                 return _row_to_run(row)
         except (ResolutionNotFoundError, ResolutionStoreError):
             raise
+        except SQLAlchemyError as error:
+            raise ResolutionStoreError(
+                "The resolution workflow could not be loaded."
+            ) from error
+
+    def find_run_by_review_id(self, review_id: str) -> ResolutionRun | None:
+        try:
+            with self._session_factory() as session:
+                row = session.scalar(
+                    select(ResolutionRunRow).where(
+                        ResolutionRunRow.review_id == review_id
+                    )
+                )
+                return None if row is None else _row_to_run(row)
         except SQLAlchemyError as error:
             raise ResolutionStoreError(
                 "The resolution workflow could not be loaded."
@@ -267,10 +294,22 @@ class SqliteResolutionStore:
                         "This resolution does not contain a refund action."
                     )
                 if run.action_receipt is not None:
+                    _require_aware_time(executed_at, "Execution replay")
+                    if executed_at < run.updated_at:
+                        raise IllegalTransitionError(
+                            "Execution replay time cannot precede workflow state."
+                        )
                     replayed = run.action_receipt.model_copy(update={"replayed": True})
-                    return ResolutionRun.model_validate(
-                        run.model_copy(update={"action_receipt": replayed}).model_dump()
+                    updated = ResolutionRun.model_validate(
+                        run.model_copy(
+                            update={
+                                "action_receipt": replayed,
+                                "updated_at": executed_at,
+                            }
+                        ).model_dump()
                     )
+                    run_row.run_json = updated.model_dump_json()
+                    return updated
                 if run.status is not ResolutionStatus.READY_TO_EXECUTE:
                     raise IllegalTransitionError(
                         f"Refund execution is not legal from state {run.status.value!r}."

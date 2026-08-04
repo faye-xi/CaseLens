@@ -32,7 +32,11 @@ EXECUTED_AT = datetime(2026, 8, 4, 13, 10, tzinfo=UTC)
 REPLAYED_AT = datetime(2026, 8, 4, 13, 15, tzinfo=UTC)
 
 
-def make_waiting_run(*, workflow_id: str = "run-1") -> ResolutionRun:
+def make_waiting_run(
+    *,
+    workflow_id: str = "run-1",
+    review_id: str = "review-1",
+) -> ResolutionRun:
     case = make_case()
     review = make_review()
     packet = review.decision_packet
@@ -40,6 +44,7 @@ def make_waiting_run(*, workflow_id: str = "run-1") -> ResolutionRun:
     fingerprint = packet_fingerprint(packet)
     return ResolutionRun(
         workflow_id=workflow_id,
+        review_id=review_id,
         case_id=case.case_id,
         packet=packet,
         packet_fingerprint=fingerprint,
@@ -116,6 +121,18 @@ def test_duplicate_workflow_id_is_rejected(tmp_path: Path) -> None:
     with pytest.raises(ResolutionConflictError, match="already exists"):
         store.create_run(make_waiting_run())
 
+    store.close()
+
+
+def test_one_review_cannot_start_two_resolution_workflows(tmp_path: Path) -> None:
+    store = SqliteResolutionStore(tmp_path / "resolution.db")
+    store.create_run(make_waiting_run())
+
+    with pytest.raises(ResolutionConflictError, match="review"):
+        store.create_run(make_waiting_run(workflow_id="run-2"))
+
+    assert store.find_run_by_review_id("review-1") == make_waiting_run()
+    assert store.find_run_by_review_id("missing-review") is None
     store.close()
 
 
@@ -261,6 +278,8 @@ def test_same_action_is_replayed_without_second_mutation(tmp_path: Path) -> None
     assert replay.action_receipt is not None
     assert replay.action_receipt.replayed is True
     assert replay.action_receipt.receipt_id == first.action_receipt.receipt_id
+    assert store.get_run("run-1").action_receipt == replay.action_receipt
+    assert store.get_run("run-1").updated_at == REPLAYED_AT
     assert store.get_refund("payment-1", "refund-1").completed_at == EXECUTED_AT
     store.close()
 
@@ -273,7 +292,7 @@ def test_same_idempotency_key_with_different_command_is_rejected(
     store.create_run(make_waiting_run(workflow_id="run-1"))
     approve(store, "run-1")
     store.execute_refund_once("run-1", executed_at=EXECUTED_AT)
-    store.create_run(make_waiting_run(workflow_id="run-2"))
+    store.create_run(make_waiting_run(workflow_id="run-2", review_id="review-2"))
     approve(store, "run-2")
 
     with pytest.raises(ResolutionConflictError, match="idempotency"):

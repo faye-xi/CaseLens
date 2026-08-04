@@ -38,6 +38,7 @@ class ResolutionWorkflow:
         case: Case,
         review: CaseReviewResult,
         *,
+        review_id: str,
         workflow_id: str,
         created_at: datetime,
     ) -> ResolutionRun:
@@ -65,6 +66,7 @@ class ResolutionWorkflow:
             status = ResolutionStatus.WAITING_APPROVAL
         run = ResolutionRun(
             workflow_id=workflow_id,
+            review_id=review_id,
             case_id=case.case_id,
             packet=packet,
             packet_fingerprint=fingerprint,

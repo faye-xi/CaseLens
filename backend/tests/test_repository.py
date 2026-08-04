@@ -5,6 +5,17 @@ import pytest
 from sqlalchemy import text
 from sqlalchemy.exc import IntegrityError
 
+from caselens.agent.case_review import (
+    CaseReviewError,
+    CaseReviewResult,
+    CaseReviewStatus,
+    CaseReviewTerminationReason,
+)
+from caselens.agent.protocol import (
+    InvestigationResult,
+    InvestigationStatus,
+    InvestigationTerminationReason,
+)
 from caselens.domain.investigation import (
     Evidence,
     EvidenceBundle,
@@ -14,6 +25,7 @@ from caselens.domain.investigation import (
     MissingEvidence,
 )
 from caselens.domain.models import Case
+from caselens.model.protocol import ModelError, ModelTrace
 from caselens.persistence import repository as repository_module
 from caselens.persistence.repository import (
     RecordConflictError,
@@ -110,6 +122,81 @@ def test_missing_records_raise_explicit_not_found_error(tmp_path) -> None:
         repository.get_case("CASE-UNKNOWN")
     with pytest.raises(RecordNotFoundError, match="RUN-UNKNOWN"):
         repository.get_investigation("RUN-UNKNOWN")
+
+    repository.close()
+
+
+def test_case_review_round_trips_complete_trace_after_repository_reopens(
+    tmp_path,
+) -> None:
+    database_path = tmp_path / "caselens.db"
+    case = _case()
+    review = _failed_review(case.case_id)
+    repository = SqliteRepository(database_path)
+    repository.save_case(case)
+
+    stored = repository.save_case_review(
+        "REVIEW-2",
+        case,
+        review,
+        created_at=_created_at(),
+    )
+    repository.close()
+
+    reopened = SqliteRepository(database_path)
+    assert reopened.get_case_review("REVIEW-2") == stored
+    assert reopened.get_case_review("REVIEW-2").result.investigation.model_traces == (
+        review.investigation.model_traces
+    )
+    assert reopened.list_cases() == (case,)
+    reopened.close()
+
+
+def test_case_review_lists_stably_and_identical_retry_is_idempotent(tmp_path) -> None:
+    repository = SqliteRepository(tmp_path / "caselens.db")
+    case = _case()
+    review = _failed_review(case.case_id)
+
+    second = repository.save_case_review(
+        "REVIEW-2", case, review, created_at=_created_at()
+    )
+    first = repository.save_case_review(
+        "REVIEW-1",
+        case,
+        review,
+        created_at=_created_at() - timedelta(minutes=1),
+    )
+    replayed = repository.save_case_review(
+        "REVIEW-2", case, review, created_at=_created_at()
+    )
+
+    assert replayed == second
+    assert repository.list_case_reviews(case.case_id) == (first, second)
+    repository.close()
+
+
+def test_case_review_rejects_mismatched_case_and_conflicting_retry(tmp_path) -> None:
+    repository = SqliteRepository(tmp_path / "caselens.db")
+    case = _case()
+    review = _failed_review(case.case_id)
+    repository.save_case_review("REVIEW-1", case, review, created_at=_created_at())
+
+    with pytest.raises(RepositoryInputError, match="same case"):
+        repository.save_case_review(
+            "REVIEW-WRONG",
+            case,
+            _failed_review("CASE-OTHER"),
+            created_at=_created_at(),
+        )
+    with pytest.raises(RecordConflictError, match="different stored review"):
+        repository.save_case_review(
+            "REVIEW-1",
+            case,
+            review,
+            created_at=_created_at() + timedelta(minutes=1),
+        )
+    with pytest.raises(RecordNotFoundError, match="REVIEW-UNKNOWN"):
+        repository.get_case_review("REVIEW-UNKNOWN")
 
     repository.close()
 
@@ -387,3 +474,35 @@ def _complete_bundle() -> EvidenceBundle:
 
 def _created_at() -> datetime:
     return datetime(2026, 7, 29, 19, 10, tzinfo=UTC)
+
+
+def _failed_review(case_id: str) -> CaseReviewResult:
+    model_error = ModelError(
+        code="invalid_response",
+        message="The deterministic model failed safely.",
+    )
+    trace = ModelTrace(
+        request_id="review-investigation-1",
+        implementation="deterministic-test-model",
+        started_at=_created_at() - timedelta(seconds=1),
+        completed_at=_created_at(),
+        duration_ms=1000,
+        status="failed",
+        error_code="invalid_response",
+    )
+    return CaseReviewResult(
+        case_id=case_id,
+        status=CaseReviewStatus.ERROR,
+        termination_reason=CaseReviewTerminationReason.MODEL_ERROR,
+        investigation=InvestigationResult(
+            status=InvestigationStatus.ERROR,
+            termination_reason=InvestigationTerminationReason.MODEL_ERROR,
+            steps=1,
+            model_traces=(trace,),
+            model_error=model_error,
+        ),
+        error=CaseReviewError(
+            code="model_error",
+            message="The review stopped at the model boundary.",
+        ),
+    )

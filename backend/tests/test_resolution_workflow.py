@@ -67,6 +67,7 @@ def start_approved_workflow(
     workflow.start_resolution(
         make_case(),
         make_review(),
+        review_id="review-1",
         workflow_id="run-1",
         created_at=CREATED_AT,
     )
@@ -123,11 +124,13 @@ def test_high_risk_resolution_waits_without_mutating_refund(tmp_path: Path) -> N
     result = workflow.start_resolution(
         make_case(),
         make_review(),
+        review_id="review-1",
         workflow_id="run-1",
         created_at=CREATED_AT,
     )
 
     assert result.status is ResolutionStatus.WAITING_APPROVAL
+    assert result.review_id == "review-1"
     assert store.get_refund("payment-1", "refund-1").status is RefundStatus.PROCESSING
     store.close()
 
@@ -137,7 +140,11 @@ def test_rejected_resolution_never_executes(tmp_path: Path) -> None:
     store.seed_refunds((make_payment(),))
     workflow = ResolutionWorkflow(store)
     workflow.start_resolution(
-        make_case(), make_review(), workflow_id="run-1", created_at=CREATED_AT
+        make_case(),
+        make_review(),
+        review_id="review-1",
+        workflow_id="run-1",
+        created_at=CREATED_AT,
     )
     rejected = workflow.decide_approval(
         "run-1",
@@ -223,6 +230,7 @@ def test_low_risk_non_action_packet_completes_without_approval(tmp_path: Path) -
     result = workflow.start_resolution(
         make_case(),
         make_review(recommendation="deny_refund"),
+        review_id="review-1",
         workflow_id="run-1",
         created_at=CREATED_AT,
     )
@@ -241,6 +249,7 @@ def test_high_risk_non_action_packet_waits_then_completes_without_action(
     waiting = workflow.start_resolution(
         make_case(),
         make_review(recommendation="deny_refund", risk_level="high"),
+        review_id="review-1",
         workflow_id="run-1",
         created_at=CREATED_AT,
     )

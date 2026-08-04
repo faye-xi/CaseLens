@@ -160,6 +160,7 @@ class VerificationResult(ResolutionModel):
 
 class ResolutionRun(ResolutionModel):
     workflow_id: Identifier
+    review_id: Identifier
     case_id: Identifier
     packet: DecisionPacket
     packet_fingerprint: Annotated[str, StringConstraints(pattern=r"^[0-9a-f]{64}$")]

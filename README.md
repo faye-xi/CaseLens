@@ -1,6 +1,6 @@
 # CaseLens
 
-> **Work in Progress — V0.1 Day 12 complete**
+> **Work in Progress — V0.1 Day 13 complete**
 
 CaseLens is an auditable e-commerce dispute review agent and policy regression lab.
 
@@ -51,14 +51,35 @@ How can an agent that operates business tools remain verifiable, reviewable, and
 - A durable Day 12 resolution workflow with packet-bound human approval,
   SQLite-backed simulated refund completion, resource-scoped idempotency, and
   read-back verification before successful completion.
+- A versioned FastAPI product boundary for case reads, synchronous review,
+  approval, idempotent simulated execution, verification, and aggregate replay
+  with model/tool traces.
+- Durable full-review snapshots and explicit review-to-resolution lineage, plus
+  a deterministic synthetic demo runtime that exercises the real orchestration
+  boundaries without calling an external model or payment provider.
 - Automated pytest coverage and Ruff checks.
 
 ## Planned for V0.1
 
 - Deterministic domain models for the remaining three dispute types.
-- FastAPI product endpoints and replay access for review workflows.
-- Golden-case evaluation and replayable traces.
+- Golden-case evaluation and baseline comparison.
 - React and TypeScript review workspace.
+
+## Run the Product API
+
+The default server seeds one clearly synthetic case and uses a deterministic
+`MockModel`. It performs no external model or payment-provider calls.
+
+```powershell
+cd backend
+$env:CASELENS_DB_PATH = "$PWD\caselens-demo.db"
+uv sync
+uv run uvicorn main:app --reload
+```
+
+OpenAPI documentation is available at `http://127.0.0.1:8000/docs`. The API is
+versioned under `/api/v1`; the full operation order and example requests are in
+the [backend guide](backend/README.md#fastapi-product-api-and-replay).
 
 ## Run the Current Tests
 

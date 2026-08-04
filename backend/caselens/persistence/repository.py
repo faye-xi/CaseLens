@@ -9,6 +9,7 @@ from sqlalchemy import create_engine, event, select
 from sqlalchemy.exc import IntegrityError, SQLAlchemyError
 from sqlalchemy.orm import Session, sessionmaker
 
+from caselens.agent.case_review import CaseReviewResult
 from caselens.domain.investigation import (
     Evidence,
     EvidenceBundle,
@@ -22,6 +23,7 @@ from caselens.domain.investigation import (
 from caselens.domain.models import Case
 from caselens.persistence.models import (
     Base,
+    CaseReviewRow,
     CaseRow,
     EvidenceConflictRow,
     EvidenceRow,
@@ -29,6 +31,8 @@ from caselens.persistence.models import (
     InvestigationRunRow,
     MissingEvidenceRow,
 )
+
+_DECIMAL_MARKER = "__caselens_decimal__"
 
 
 class PersistenceError(RuntimeError):
@@ -64,6 +68,15 @@ class StoredInvestigation(BaseModel):
     bundle: EvidenceBundle
 
 
+class StoredCaseReview(BaseModel):
+    model_config = ConfigDict(extra="forbid", frozen=True)
+
+    review_id: Identifier
+    case_id: Identifier
+    created_at: AwareDatetime
+    result: CaseReviewResult
+
+
 class SqliteRepository:
     def __init__(self, database_path: str | Path) -> None:
         path = Path(database_path)
@@ -74,6 +87,105 @@ class SqliteRepository:
 
     def close(self) -> None:
         self._engine.dispose()
+
+    def save_case(self, case: Case) -> Case:
+        try:
+            with self._session_factory.begin() as session:
+                _store_case(session, case)
+        except RecordConflictError:
+            raise
+        except IntegrityError as error:
+            raise RecordConflictError("The case conflicts with stored data.") from error
+        except SQLAlchemyError as error:
+            raise PersistenceError("The case could not be saved.") from error
+        return case
+
+    def list_cases(self) -> tuple[Case, ...]:
+        try:
+            with self._session_factory() as session:
+                rows = session.scalars(select(CaseRow).order_by(CaseRow.case_id)).all()
+                return tuple(_row_to_case(row) for row in rows)
+        except SQLAlchemyError as error:
+            raise PersistenceError("The cases could not be loaded.") from error
+
+    def save_case_review(
+        self,
+        review_id: str,
+        case: Case,
+        result: CaseReviewResult,
+        *,
+        created_at: datetime,
+    ) -> StoredCaseReview:
+        if result.case_id != case.case_id:
+            raise RepositoryInputError(
+                "The case and review result must reference the same case."
+            )
+        try:
+            stored = StoredCaseReview(
+                review_id=review_id,
+                case_id=case.case_id,
+                created_at=created_at,
+                result=result,
+            )
+        except ValidationError as error:
+            raise RepositoryInputError(
+                "The case review metadata is invalid."
+            ) from error
+
+        try:
+            with self._session_factory.begin() as session:
+                _store_case(session, case)
+                existing = session.get(CaseReviewRow, stored.review_id)
+                if existing is not None:
+                    if _row_to_case_review(existing) == stored:
+                        return stored
+                    raise RecordConflictError(
+                        "The review ID conflicts with a different stored review."
+                    )
+                session.add(
+                    CaseReviewRow(
+                        review_id=stored.review_id,
+                        case_id=stored.case_id,
+                        created_at=stored.created_at.isoformat(),
+                        result_json=_case_review_result_to_json(stored.result),
+                    )
+                )
+        except RecordConflictError:
+            raise
+        except IntegrityError as error:
+            raise RecordConflictError(
+                "The case review conflicts with stored records."
+            ) from error
+        except SQLAlchemyError as error:
+            raise PersistenceError("The case review could not be saved.") from error
+        return stored
+
+    def get_case_review(self, review_id: str) -> StoredCaseReview:
+        try:
+            with self._session_factory() as session:
+                row = session.get(CaseReviewRow, review_id)
+                if row is None:
+                    raise RecordNotFoundError(
+                        f"Case review {review_id!r} was not found."
+                    )
+                return _row_to_case_review(row)
+        except (RecordNotFoundError, PersistenceError):
+            raise
+        except SQLAlchemyError as error:
+            raise PersistenceError("The case review could not be loaded.") from error
+
+    def list_case_reviews(self, case_id: str) -> tuple[StoredCaseReview, ...]:
+        self.get_case(case_id)
+        try:
+            with self._session_factory() as session:
+                rows = session.scalars(
+                    select(CaseReviewRow)
+                    .where(CaseReviewRow.case_id == case_id)
+                    .order_by(CaseReviewRow.review_id)
+                ).all()
+                return tuple(_row_to_case_review(row) for row in rows)
+        except SQLAlchemyError as error:
+            raise PersistenceError("The case reviews could not be loaded.") from error
 
     def save_investigation(
         self,
@@ -100,14 +212,7 @@ class SqliteRepository:
             ) from error
         try:
             with self._session_factory.begin() as session:
-                stored_case = session.get(CaseRow, case.case_id)
-                if stored_case is None:
-                    session.add(_case_to_row(case))
-                    session.flush()
-                elif _row_to_case(stored_case) != case:
-                    raise RecordConflictError(
-                        "The case ID conflicts with different stored case data."
-                    )
+                _store_case(session, case)
                 session.add(
                     InvestigationRunRow(
                         run_id=record.run_id,
@@ -185,6 +290,17 @@ def _case_to_row(case: Case) -> CaseRow:
     )
 
 
+def _store_case(session: Session, case: Case) -> None:
+    stored_case = session.get(CaseRow, case.case_id)
+    if stored_case is None:
+        session.add(_case_to_row(case))
+        session.flush()
+    elif _row_to_case(stored_case) != case:
+        raise RecordConflictError(
+            "The case ID conflicts with different stored case data."
+        )
+
+
 def _row_to_case(row: CaseRow) -> Case:
     return Case(
         case_id=row.case_id,
@@ -197,6 +313,47 @@ def _row_to_case(row: CaseRow) -> Case:
         payment_id=row.payment_id,
         refund_id=row.refund_id,
     )
+
+
+def _row_to_case_review(row: CaseReviewRow) -> StoredCaseReview:
+    try:
+        return StoredCaseReview(
+            review_id=row.review_id,
+            case_id=row.case_id,
+            created_at=datetime.fromisoformat(row.created_at),
+            result=_case_review_result_from_json(row.result_json),
+        )
+    except ValueError as error:
+        raise PersistenceError("The stored case review is invalid.") from error
+
+
+def _case_review_result_to_json(result: CaseReviewResult) -> str:
+    return json.dumps(
+        result.model_dump(mode="python", exclude_computed_fields=True),
+        ensure_ascii=False,
+        separators=(",", ":"),
+        default=_review_json_default,
+    )
+
+
+def _case_review_result_from_json(payload: str) -> CaseReviewResult:
+    return CaseReviewResult.model_validate(
+        json.loads(payload, object_hook=_review_json_object_hook)
+    )
+
+
+def _review_json_default(value: object) -> object:
+    if isinstance(value, Decimal):
+        return {_DECIMAL_MARKER: str(value)}
+    if isinstance(value, datetime):
+        return value.isoformat()
+    raise TypeError(f"Unsupported case review JSON value: {type(value).__name__}.")
+
+
+def _review_json_object_hook(value: dict[str, object]) -> object:
+    if set(value) == {_DECIMAL_MARKER}:
+        return Decimal(str(value[_DECIMAL_MARKER]))
+    return value
 
 
 def _add_bundle_rows(session: Session, run_id: str, bundle: EvidenceBundle) -> None:

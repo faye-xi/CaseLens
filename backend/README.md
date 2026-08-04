@@ -233,9 +233,89 @@ amount, currency, and completion time with the approved command. Only a matching
 read-back reaches `completed_verified`; mismatches and safe read failures end as
 `verification_failed`.
 
-Day 12 remains synchronous and does not add HTTP routes, authentication,
-background jobs, a real payment provider, or UI behavior. FastAPI will wrap
-these stable service boundaries in Day 13.
+Day 12 remains synchronous and does not add authentication, background jobs, a
+real payment provider, or UI behavior. Day 13 wraps these stable service
+boundaries without changing their transition rules.
+
+## FastAPI product API and replay
+
+Day 13 adds a thin, versioned FastAPI adapter over `CaseLensApplication`. The
+application service coordinates the case/review repository and the independent
+resolution store; routes do not reproduce domain rules or state transitions.
+Full immutable `CaseReviewResult` snapshots are stored for restart-safe replay,
+and every `ResolutionRun` records the exact `review_id` that produced its
+authorized packet.
+
+Run the default deterministic demo API:
+
+```powershell
+$env:CASELENS_DB_PATH = "$PWD\caselens-demo.db"
+uv sync
+uv run uvicorn main:app --reload
+```
+
+The demo seeds `CASE-DEMO-001`, an existing processing refund, and two policy
+versions. Each review gets a fresh scripted `MockModel` and still passes through
+the real read-only tool executor, evidence assembly, time-aware policy
+retrieval, `DecisionPacket` validation, approval boundary, SQLite action ledger,
+and verifier. It never calls a real model, payment provider, or network service.
+
+Day 13 adds durable review-to-workflow linkage to the SQLite schema. V0.1 does
+not yet ship migrations, so delete and recreate a database produced by the
+Day 12 prototype before starting this API.
+
+All product routes are under `/api/v1`:
+
+- `GET /health`, `GET /cases`, and `GET /cases/{case_id}`;
+- `POST /cases/{case_id}/reviews` with client-chosen `review_id` and
+  `workflow_id`;
+- `GET /reviews/{review_id}` and `GET /workflows/{workflow_id}`;
+- `POST /workflows/{workflow_id}/approval` with `decision` and `decided_by`;
+- `POST /workflows/{workflow_id}/execute` and
+  `POST /workflows/{workflow_id}/verify`;
+- `GET /workflows/{workflow_id}/replay` for the case, full review, durable
+  resolution snapshot, and normalized model/tool traces.
+
+A complete demo request sequence is:
+
+```powershell
+Invoke-RestMethod http://127.0.0.1:8000/api/v1/cases
+
+$review = @{
+  review_id = "review-demo-1"
+  workflow_id = "workflow-demo-1"
+} | ConvertTo-Json
+Invoke-RestMethod -Method Post `
+  -Uri http://127.0.0.1:8000/api/v1/cases/CASE-DEMO-001/reviews `
+  -ContentType application/json -Body $review
+
+$approval = @{
+  decision = "approved"
+  decided_by = "demo-reviewer"
+} | ConvertTo-Json
+Invoke-RestMethod -Method Post `
+  -Uri http://127.0.0.1:8000/api/v1/workflows/workflow-demo-1/approval `
+  -ContentType application/json -Body $approval
+
+Invoke-RestMethod -Method Post `
+  http://127.0.0.1:8000/api/v1/workflows/workflow-demo-1/execute
+Invoke-RestMethod -Method Post `
+  http://127.0.0.1:8000/api/v1/workflows/workflow-demo-1/verify
+Invoke-RestMethod `
+  http://127.0.0.1:8000/api/v1/workflows/workflow-demo-1/replay
+```
+
+The application clock owns operation timestamps; clients cannot backdate
+approval, execution, or verification. Expected missing resources return `404`,
+conflicts and illegal transitions return `409`, malformed requests return
+`422`, and safe persistence failures return `503`. Business failures use a
+stable `{ "error": { "code": ..., "message": ... } }` envelope.
+The review response includes `created`: a new review returns `201` with `true`,
+while an identical retry returns the same durable result as `200` with `false`.
+
+This API is intentionally synchronous and unauthenticated for the local V0.1
+demo. It does not claim production identity, authorization, background-job,
+migration, or external-provider support.
 
 ## Policy version timeline
 
