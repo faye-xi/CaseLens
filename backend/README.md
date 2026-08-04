@@ -133,6 +133,25 @@ tool, canonical JSON arguments, timezone-aware start and completion times,
 non-negative duration, terminal status, and error code when failed. Trace
 persistence and Agent execution remain later Roadmap work.
 
+## Mock model and Tool Calling protocol
+
+`caselens.model` defines a small internal Pydantic protocol for model messages,
+requests, responses, structured output errors, and in-memory model traces.
+`MockModel` consumes only an in-memory response script, records the immutable
+requests it received, and returns deterministic errors when a scripted response
+is malformed or the script is exhausted. It has no real-model fallback or
+network transport.
+
+Model tool calls reuse Day 5's immutable `ToolCall` directly. `tool_definitions()`
+derives the advertised JSON Schemas from the same read-only registry and query
+models used by `execute_tool()`. `execute_tool_calls()` rejects duplicate or
+unauthorized calls before dispatch, then preserves Day 5's parameter
+validation, structured error codes, per-call results, and `ToolTrace` values.
+Malformed model responses stop at the model boundary rather than guessing or
+executing a partial call. This layer handles one model response and one tool
+call batch; the Agent investigation loop and maximum-step policy remain later
+Roadmap work.
+
 ## Policy version timeline
 
 `PolicyVersion` records a policy ID, version label, timezone-aware start, and an
@@ -158,4 +177,4 @@ score, and exact original text as a citation. A missing match returns an empty
 citation tuple; a policy timeline gap remains an explicit
 `PolicyVersionNotFoundError`. Day 8's `DecisionPacket` consumes these trusted
 citations but does not add embeddings, a vector database, Agent execution, or
-Tool Calling.
+provider-specific model integration.

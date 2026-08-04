@@ -48,6 +48,16 @@ class ToolError(ToolProtocolModel):
     message: NonBlankText
 
 
+class ToolCallBatchErrorCode(StrEnum):
+    DUPLICATE_TOOL_CALL = "duplicate_tool_call"
+    UNAUTHORIZED_TOOL = "unauthorized_tool"
+
+
+class ToolCallBatchError(ToolProtocolModel):
+    code: ToolCallBatchErrorCode
+    message: NonBlankText
+
+
 class ToolTrace(ToolProtocolModel):
     call_id: Identifier
     tool_name: Identifier
@@ -93,4 +103,17 @@ class ToolExecutionResult(ToolProtocolModel):
             or self.trace.error_code is not self.error.code
         ):
             raise ValueError("Tool error and failed trace must have matching codes.")
+        return self
+
+
+class ToolCallBatchResult(ToolProtocolModel):
+    results: tuple[ToolExecutionResult, ...] = ()
+    error: ToolCallBatchError | None = None
+
+    @model_validator(mode="after")
+    def validate_outcome(self) -> "ToolCallBatchResult":
+        if self.error is not None and self.results:
+            raise ValueError("A failed tool-call batch cannot contain results.")
+        if self.error is None and not self.results:
+            raise ValueError("A successful tool-call batch requires results.")
         return self

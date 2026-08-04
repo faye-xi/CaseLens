@@ -4,7 +4,7 @@ from decimal import Decimal
 import pytest
 from pydantic import ValidationError
 
-from caselens.tools.execution import execute_tool
+from caselens.tools.execution import execute_tool, execute_tool_calls, tool_definitions
 from caselens.tools.models import (
     Message,
     MessageHistory,
@@ -18,6 +18,7 @@ from caselens.tools.models import (
 )
 from caselens.tools.protocol import (
     ToolCall,
+    ToolCallBatchErrorCode,
     ToolError,
     ToolErrorCode,
     ToolExecutionResult,
@@ -361,3 +362,80 @@ def test_trace_clamps_negative_clock_duration_to_zero() -> None:
 
     assert result.data == records["get_order"]
     assert result.trace.duration_ms == 0
+
+
+def test_tool_definitions_are_generated_from_the_registered_query_models() -> None:
+    definitions = tool_definitions()
+    by_name = {definition.name: definition for definition in definitions}
+
+    assert set(by_name) == {
+        "get_order",
+        "get_payment",
+        "get_logistics",
+        "get_messages",
+    }
+    assert by_name["get_order"].parameters_schema["properties"]["order_id"]
+
+
+def test_duplicate_tool_calls_are_rejected_before_any_source_call() -> None:
+    source = RaisingSource(AssertionError("The source must not be called."))
+    result = execute_tool_calls(
+        source,
+        (
+            ToolCall(
+                call_id="call-1",
+                tool_name="get_order",
+                arguments={"order_id": "order-1"},
+            ),
+            ToolCall(
+                call_id="call-1",
+                tool_name="get_order",
+                arguments={"order_id": "order-1"},
+            ),
+        ),
+        allowed_tool_names={"get_order"},
+    )
+
+    assert source.calls == 0
+    assert result.results == ()
+    assert result.error is not None
+    assert result.error.code is ToolCallBatchErrorCode.DUPLICATE_TOOL_CALL
+
+
+def test_unauthorized_tool_is_rejected_before_dispatch() -> None:
+    source = RaisingSource(AssertionError("The source must not be called."))
+    result = execute_tool_calls(
+        source,
+        (
+            ToolCall(
+                call_id="call-1",
+                tool_name="get_payment",
+                arguments={"payment_id": "payment-1"},
+            ),
+        ),
+        allowed_tool_names={"get_order"},
+    )
+
+    assert source.calls == 0
+    assert result.error is not None
+    assert result.error.code is ToolCallBatchErrorCode.UNAUTHORIZED_TOOL
+
+
+def test_valid_batch_preserves_day5_result_and_trace_for_each_call() -> None:
+    source, records = make_source_and_records()
+    result = execute_tool_calls(
+        source,
+        (
+            ToolCall(
+                call_id="call-1",
+                tool_name="get_order",
+                arguments={"order_id": "order-1"},
+            ),
+        ),
+        allowed_tool_names={"get_order"},
+        clock=iter((STARTED_AT, COMPLETED_AT)).__next__,
+    )
+
+    assert result.error is None
+    assert result.results[0].data == records["get_order"]
+    assert result.results[0].trace.call_id == "call-1"

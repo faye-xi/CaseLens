@@ -1,12 +1,18 @@
 import json
-from collections.abc import Callable
+from collections.abc import Callable, Collection
+from dataclasses import dataclass
 from datetime import UTC, datetime
+from types import MappingProxyType
 
-from pydantic import JsonValue, ValidationError
+from pydantic import BaseModel, ValidationError
 
+from caselens.model.protocol import ToolDefinition
 from caselens.tools.models import LogisticsQuery, MessageQuery, OrderQuery, PaymentQuery
 from caselens.tools.protocol import (
     ToolCall,
+    ToolCallBatchError,
+    ToolCallBatchErrorCode,
+    ToolCallBatchResult,
     ToolData,
     ToolError,
     ToolErrorCode,
@@ -28,41 +34,65 @@ from caselens.tools.source import (
 )
 
 Clock = Callable[[], datetime]
-ToolHandler = Callable[[BusinessDataSource, dict[str, JsonValue]], ToolData]
+ToolHandler = Callable[[BusinessDataSource, BaseModel], ToolData]
+
+
+@dataclass(frozen=True)
+class RegisteredTool:
+    name: str
+    description: str
+    query_model: type[BaseModel]
+    handler: ToolHandler
 
 
 def utc_now() -> datetime:
     return datetime.now(UTC)
 
 
-def _run_order(source: BusinessDataSource, arguments: dict[str, JsonValue]) -> ToolData:
-    return get_order(source, OrderQuery.model_validate(arguments))
+def _run_order(source: BusinessDataSource, query: BaseModel) -> ToolData:
+    return get_order(source, query)  # type: ignore[arg-type]
 
 
-def _run_payment(
-    source: BusinessDataSource, arguments: dict[str, JsonValue]
-) -> ToolData:
-    return get_payment(source, PaymentQuery.model_validate(arguments))
+def _run_payment(source: BusinessDataSource, query: BaseModel) -> ToolData:
+    return get_payment(source, query)  # type: ignore[arg-type]
 
 
-def _run_logistics(
-    source: BusinessDataSource, arguments: dict[str, JsonValue]
-) -> ToolData:
-    return get_logistics(source, LogisticsQuery.model_validate(arguments))
+def _run_logistics(source: BusinessDataSource, query: BaseModel) -> ToolData:
+    return get_logistics(source, query)  # type: ignore[arg-type]
 
 
-def _run_messages(
-    source: BusinessDataSource, arguments: dict[str, JsonValue]
-) -> ToolData:
-    return get_messages(source, MessageQuery.model_validate(arguments))
+def _run_messages(source: BusinessDataSource, query: BaseModel) -> ToolData:
+    return get_messages(source, query)  # type: ignore[arg-type]
 
 
-_TOOL_HANDLERS: dict[str, ToolHandler] = {
-    "get_order": _run_order,
-    "get_payment": _run_payment,
-    "get_logistics": _run_logistics,
-    "get_messages": _run_messages,
-}
+TOOL_REGISTRY = MappingProxyType(
+    {
+        "get_order": RegisteredTool(
+            name="get_order",
+            description="Read an order record by order ID.",
+            query_model=OrderQuery,
+            handler=_run_order,
+        ),
+        "get_payment": RegisteredTool(
+            name="get_payment",
+            description="Read a payment and refund record by payment ID.",
+            query_model=PaymentQuery,
+            handler=_run_payment,
+        ),
+        "get_logistics": RegisteredTool(
+            name="get_logistics",
+            description="Read shipment tracking for an order.",
+            query_model=LogisticsQuery,
+            handler=_run_logistics,
+        ),
+        "get_messages": RegisteredTool(
+            name="get_messages",
+            description="Read customer and agent messages for an order.",
+            query_model=MessageQuery,
+            handler=_run_messages,
+        ),
+    }
+)
 
 _ERROR_MESSAGES: dict[ToolErrorCode, str] = {
     ToolErrorCode.UNKNOWN_TOOL: "The requested tool is not registered.",
@@ -74,7 +104,7 @@ _ERROR_MESSAGES: dict[ToolErrorCode, str] = {
 }
 
 
-def _arguments_json(call: ToolCall) -> str:
+def canonical_arguments_json(call: ToolCall) -> str:
     return json.dumps(
         call.arguments,
         ensure_ascii=False,
@@ -135,9 +165,9 @@ def execute_tool(
     clock: Clock = utc_now,
 ) -> ToolExecutionResult:
     started_at = clock()
-    arguments_json = _arguments_json(call)
-    handler = _TOOL_HANDLERS.get(call.tool_name)
-    if handler is None:
+    arguments_json = canonical_arguments_json(call)
+    registered_tool = TOOL_REGISTRY.get(call.tool_name)
+    if registered_tool is None:
         return _failure_result(
             call,
             arguments_json,
@@ -146,7 +176,8 @@ def execute_tool(
             ToolErrorCode.UNKNOWN_TOOL,
         )
     try:
-        data = handler(source, call.arguments)
+        query = registered_tool.query_model.model_validate(call.arguments)
+        data = registered_tool.handler(source, query)
     except ValidationError:
         error_code = ToolErrorCode.INVALID_INPUT
     except RecordNotFoundError:
@@ -176,4 +207,64 @@ def execute_tool(
         started_at,
         completed_at,
         error_code,
+    )
+
+
+_BATCH_ERROR_MESSAGES: dict[ToolCallBatchErrorCode, str] = {
+    ToolCallBatchErrorCode.DUPLICATE_TOOL_CALL: (
+        "The tool-call batch contains a duplicate call."
+    ),
+    ToolCallBatchErrorCode.UNAUTHORIZED_TOOL: (
+        "The tool call is not allowed in this model request."
+    ),
+}
+
+
+def execute_tool_calls(
+    source: BusinessDataSource,
+    calls: Collection[ToolCall],
+    *,
+    allowed_tool_names: Collection[str],
+    clock: Clock = utc_now,
+) -> ToolCallBatchResult:
+    calls_tuple = tuple(calls)
+    call_ids = [call.call_id for call in calls_tuple]
+    semantic_calls = [
+        (call.tool_name, canonical_arguments_json(call)) for call in calls_tuple
+    ]
+    if len(call_ids) != len(set(call_ids)) or len(semantic_calls) != len(
+        set(semantic_calls)
+    ):
+        return ToolCallBatchResult(
+            error=ToolCallBatchError(
+                code=ToolCallBatchErrorCode.DUPLICATE_TOOL_CALL,
+                message=_BATCH_ERROR_MESSAGES[
+                    ToolCallBatchErrorCode.DUPLICATE_TOOL_CALL
+                ],
+            )
+        )
+
+    allowed_names = frozenset(allowed_tool_names)
+    if any(call.tool_name not in allowed_names for call in calls_tuple):
+        return ToolCallBatchResult(
+            error=ToolCallBatchError(
+                code=ToolCallBatchErrorCode.UNAUTHORIZED_TOOL,
+                message=_BATCH_ERROR_MESSAGES[ToolCallBatchErrorCode.UNAUTHORIZED_TOOL],
+            )
+        )
+
+    results = tuple(execute_tool(source, call, clock=clock) for call in calls_tuple)
+    return ToolCallBatchResult(results=results)
+
+
+def tool_definitions() -> tuple[ToolDefinition, ...]:
+    return tuple(
+        ToolDefinition(
+            name=registered_tool.name,
+            description=registered_tool.description,
+            parameters_schema=registered_tool.query_model.model_json_schema(),
+        )
+        for registered_tool in sorted(
+            TOOL_REGISTRY.values(), key=lambda tool: tool.name
+        )
     )
