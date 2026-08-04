@@ -26,8 +26,8 @@ investigation must first locate a refund record.
 - `needs_evidence` with `refund_record` when it is not.
 
 This assessment is investigation triage, not a refund decision. Refund status,
-evidence conflicts, policy timing, and final recommendations are intentionally
-outside this contract.
+evidence conflicts, policy timing, and final recommendations are handled by
+separate domain models so this intake contract remains small.
 
 ## Failure paths
 
@@ -56,6 +56,27 @@ Pydantic rejects empty evidence bundles, duplicate evidence or fact IDs,
 invalid fact value types, timezone-naive collection times, and conflicts with
 missing, self-referencing, unrelated, or equal-valued facts. These deterministic
 checks do not call an LLM and do not make a refund decision.
+
+## Auditable decision packets
+
+`DecisionDraft` represents a structured candidate recommendation. It contains
+only the case ID, rationale, risk level, fact references, and policy clause IDs.
+`build_decision_packet()` checks that those references exist in the trusted
+`EvidenceBundle` and `PolicyRetrievalResult`, then creates an immutable
+`DecisionPacket` with copied evidence status, missing items, conflicts, the
+selected policy version, and trusted policy citations.
+
+Final `approve_refund` and `deny_refund` recommendations require complete,
+non-conflicted evidence, at least one resolvable fact reference, and a matching
+citation from the selected policy version. Missing evidence produces a
+`request_evidence` path, conflicts require `manual_review`, and a policy
+no-match cannot be replaced by a citation from another version. `approve_refund`
+is always high risk and is marked as requiring approval; this domain layer does
+not execute any action or implement the approval workflow.
+
+These checks reject untraceable or unsafe recommendations deterministically.
+They do not call an LLM and do not allow a model to invent fact values, policy
+versions, effective periods, or policy quotes.
 
 ## Persistence repository
 
@@ -135,5 +156,6 @@ in-memory policy-clause corpus. It uses transparent token-overlap scoring with
 stable ordering and returns the clause ID, policy version, effective period,
 score, and exact original text as a citation. A missing match returns an empty
 citation tuple; a policy timeline gap remains an explicit
-`PolicyVersionNotFoundError`. Day 7 does not add embeddings, a vector database,
-Agent execution, or Tool Calling.
+`PolicyVersionNotFoundError`. Day 8's `DecisionPacket` consumes these trusted
+citations but does not add embeddings, a vector database, Agent execution, or
+Tool Calling.
