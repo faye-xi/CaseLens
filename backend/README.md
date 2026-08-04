@@ -200,9 +200,42 @@ computes high-risk approval requirements. Model errors, policy gaps, invalid
 drafts, unauthorized tool batches, and maximum-step termination do not create a
 final packet.
 
-Day 11 remains in memory and does not approve or execute refunds. Approval,
-controlled actions, idempotency, final-state reads, and verifier behavior remain
-Day 12 work.
+At the Day 11 boundary, case review remains in memory and does not approve or
+execute refunds. The following Day 12 layer consumes its immutable result
+without giving the Agent a write tool.
+
+## Approval, idempotent action, and verification
+
+Day 12 adds `caselens.resolution` as a durable safety boundary after case
+review. An immutable `DecisionPacket` is fingerprinted and stored alongside a
+separate approval request, so a human decision authorizes one exact packet and
+planned action rather than a case in the abstract. The Agent and model retain
+only their existing read-only tools.
+
+The only simulated side effect completes one existing refund from `requested`
+or `processing` to `succeeded`; it never creates a second refund. The action is
+planned deterministically from the validated case and unique trusted refund
+evidence. Its business idempotency key is
+`complete_refund:{payment_id}:{refund_id}`, preventing two workflows from
+independently completing the same refund.
+
+`SqliteResolutionStore` persists workflow snapshots and simulated refund state.
+The refund mutation, action receipt, idempotency ledger entry, and transition to
+verification-ready state share one transaction. Identical retries return the
+stored receipt without repeating the mutation, while a different command under
+the same key is rejected. Missing refunds and amount, currency, or state
+precondition failures produce durable failed receipts without changing business
+state.
+
+An action receipt is not final proof of success. The verifier re-reads the
+simulated refund through a read-only protocol and compares its identity, status,
+amount, currency, and completion time with the approved command. Only a matching
+read-back reaches `completed_verified`; mismatches and safe read failures end as
+`verification_failed`.
+
+Day 12 remains synchronous and does not add HTTP routes, authentication,
+background jobs, a real payment provider, or UI behavior. FastAPI will wrap
+these stable service boundaries in Day 13.
 
 ## Policy version timeline
 
