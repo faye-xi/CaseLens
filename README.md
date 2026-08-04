@@ -1,6 +1,6 @@
 # CaseLens
 
-> **Work in Progress — V0.1 Day 10 complete**
+> **Work in Progress — V0.1 Day 11 complete**
 
 CaseLens is an auditable e-commerce dispute review agent and policy regression lab.
 
@@ -44,6 +44,10 @@ How can an agent that operates business tools remain verifiable, reviewable, and
 - A bounded single-agent investigation loop that reuses the model protocol,
   read-only Tool Calling executor, structured Tool Results, model traces, and
   safe maximum-step termination.
+- A Day 11 case-review orchestrator that turns a validated case and read-only
+  investigation into auditable evidence, time-aware policy citations, and a
+  validated `DecisionPacket`, with safe paths for missing or conflicting
+  evidence and policy no-match.
 - Automated pytest coverage and Ruff checks.
 
 ## Planned for V0.1

@@ -174,6 +174,36 @@ Day 10 stops at an in-memory `InvestigationResult` containing the message
 history and traces. It does not build a `DecisionPacket`, execute side effects,
 request approval, or connect to a real model.
 
+## Case review vertical loop
+
+Day 11 adds `caselens.agent.run_case_review()` as the first vertical orchestration
+entry point for the supported `refund_not_received` case. It converts the case
+into deterministic system/user messages, runs the Day 10 read-only investigation,
+and reads facts only from structured `ToolExecutionResult` messages rather than
+from the model's prose.
+
+The evidence adapter always records the customer's claim, maps a retrieved
+payment/refund record into typed refund facts, and compares the customer's
+`refund_received=False` claim with the refund status. `RefundStatus.SUCCEEDED`
+is the only status mapped to `refund_received=True`; missing records remain
+explicit missing evidence, and source failures never become empty successful
+records.
+
+After investigation, policy retrieval uses the case occurrence time to select
+the effective version before searching the fixed `refund not received` query.
+Complete evidence with at least one policy citation receives a second,
+tool-free structured `DecisionDraft` model request. Missing evidence produces
+`request_evidence`; conflicting evidence produces `manual_review`; an effective
+policy version with no matching clause produces a citation-free `manual_review`.
+All paths go through `build_decision_packet()`, which validates references and
+computes high-risk approval requirements. Model errors, policy gaps, invalid
+drafts, unauthorized tool batches, and maximum-step termination do not create a
+final packet.
+
+Day 11 remains in memory and does not approve or execute refunds. Approval,
+controlled actions, idempotency, final-state reads, and verifier behavior remain
+Day 12 work.
+
 ## Policy version timeline
 
 `PolicyVersion` records a policy ID, version label, timezone-aware start, and an
