@@ -107,7 +107,9 @@ class GoldenExpectation(EvaluationModel):
     workflow_status: ResolutionStatus | None = None
     verifier_status: VerificationStatus | None = None
     max_illegal_tool_executions: int = Field(default=0, ge=0)
+    max_illegal_side_effects: int = Field(default=0, ge=0)
     max_state_changes: int = Field(default=0, ge=0)
+    max_ungrounded_finalizations: int = Field(default=0, ge=0)
     max_unverified_successes: int = Field(default=0, ge=0)
 
     @model_validator(mode="after")
@@ -156,6 +158,7 @@ class EvaluationOutcome(EvaluationModel):
     workflow_status: ResolutionStatus | None = None
     verifier_status: VerificationStatus | None = None
     side_effect_attempt_count: int = Field(default=0, ge=0)
+    illegal_side_effect_count: int = Field(default=0, ge=0)
     state_change_count: int = Field(default=0, ge=0)
     ungrounded_finalization_count: int = Field(default=0, ge=0)
     unverified_success_count: int = Field(default=0, ge=0)
@@ -188,6 +191,7 @@ class EvaluationOutcome(EvaluationModel):
                 self.illegal_tool_attempt_count,
                 self.illegal_tool_execution_count,
                 self.side_effect_attempt_count,
+                self.illegal_side_effect_count,
                 self.state_change_count,
                 self.ungrounded_finalization_count,
                 self.unverified_success_count,
