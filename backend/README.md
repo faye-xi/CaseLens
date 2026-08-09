@@ -90,9 +90,10 @@ identifiers become an explicit `RecordConflictError`, missing records become
 `RepositoryInputError`. If any child write fails, the complete transaction is
 rolled back rather than leaving a partial investigation that looks successful.
 
-The current repository is deliberately synchronous and small. Schema migration,
-HTTP APIs, Agent execution, and policy-clause retrieval outside the domain
-baseline remain later Roadmap work.
+The repository remains deliberately synchronous and small. Higher application
+layers now add Agent execution, policy retrieval, product APIs, and replay while
+keeping SQLAlchemy records behind this adapter. Schema migrations remain out of
+scope for the local V0.1 Demo.
 
 ## Read-only business tools
 
@@ -128,11 +129,11 @@ Concrete data-source adapters own their I/O timeout and report
 `SourceTimeoutError`; the dispatcher does not create worker threads or claim to
 terminate blocked synchronous work.
 
-Every result includes an immutable in-memory trace with the call ID, requested
+Every result includes an immutable trace with the call ID, requested
 tool, canonical JSON arguments, timezone-aware start and completion times,
-non-negative duration, terminal status, and error code when failed. Trace
-persistence remains later Roadmap work; the Day 10 Agent loop records model
-traces in its in-memory investigation result.
+non-negative duration, terminal status, and error code when failed. The original
+tool boundary is in-memory; the Day 13 product layer now persists complete review
+snapshots and exposes normalized model/tool traces through durable replay.
 
 ## Mock model and Tool Calling protocol
 
@@ -343,3 +344,32 @@ citation tuple; a policy timeline gap remains an explicit
 `PolicyVersionNotFoundError`. Day 8's `DecisionPacket` consumes these trusted
 citations but does not add embeddings, a vector database, Agent execution, or
 provider-specific model integration.
+
+## Offline Golden-Case evaluation
+
+Day 15 adds `caselens.evaluation`, an offline deterministic evaluation package.
+It loads 12 clearly synthetic `refund_not_received` Golden Cases, runs
+`rules_only`, `model_only_scripted`, and `hybrid` through one normalized outcome
+contract, and grades them independently.
+
+Run or verify the committed reports from this `backend` directory:
+
+```powershell
+uv run python -m caselens.evaluation
+uv run python -m caselens.evaluation --check
+```
+
+Canonical outputs are:
+
+- `evals/results/day15-baseline.json` for machine consumption;
+- `evals/results/day15-baseline.md` for human review.
+
+The report contains no generated timestamp or machine-specific path. Two runs
+must produce byte-identical files. `--check` returns `0` only when both committed
+outputs match a fresh run; invalid datasets, runtime failures, missing results,
+or drift return `1` without overwriting the canonical files.
+
+`model_only_scripted` uses fixed `MockModel` responses to expose what is lost
+without tools, time-sensitive retrieval, trusted citations, backend policy
+checks, and verification. It is not a measurement of real LLM accuracy. Real
+token usage and real-model latency are reported as `not_measured`.
