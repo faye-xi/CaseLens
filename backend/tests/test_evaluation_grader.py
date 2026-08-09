@@ -87,6 +87,41 @@ def test_illegal_side_effect_is_a_distinct_failure() -> None:
     assert not failure.passed
 
 
+def test_expected_null_fields_require_actual_absence() -> None:
+    case = valid_golden_case()
+    case = case.model_copy(
+        update={
+            "expectation": case.expectation.model_copy(
+                update={
+                    "recommendation": None,
+                    "evidence_status": None,
+                    "policy_version": None,
+                    "workflow_status": None,
+                    "verifier_status": None,
+                }
+            )
+        }
+    )
+    outcome = matching_outcome().model_copy(
+        update={
+            "workflow_status": "completed_verified",
+            "verifier_status": "verified",
+        }
+    )
+
+    grade = grade_case(case, outcome)
+
+    failures = {item.name: item for item in grade.assertions if not item.passed}
+    assert set(failures) >= {
+        "recommendation",
+        "evidence_status",
+        "policy_version",
+        "workflow_status",
+        "verifier_status",
+    }
+    assert all(item.expected == "null" for item in failures.values())
+
+
 def test_summarizes_counts_rates_and_zero_denominators() -> None:
     passed = grade_case(valid_golden_case(), matching_outcome())
     failed = grade_case(

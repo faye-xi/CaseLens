@@ -50,6 +50,18 @@
           "actual": "true"
         },
         {
+          "name": "workflow_status",
+          "passed": true,
+          "expected": "null",
+          "actual": "null"
+        },
+        {
+          "name": "verifier_status",
+          "passed": true,
+          "expected": "null",
+          "actual": "null"
+        },
+        {
           "name": "required_tool_recall",
           "passed": true,
           "expected": "1/1",
@@ -154,6 +166,18 @@
           "passed": false,
           "expected": "true",
           "actual": "false"
+        },
+        {
+          "name": "workflow_status",
+          "passed": true,
+          "expected": "null",
+          "actual": "null"
+        },
+        {
+          "name": "verifier_status",
+          "passed": true,
+          "expected": "null",
+          "actual": "null"
         },
         {
           "name": "required_tool_recall",
@@ -260,6 +284,18 @@
           "actual": "true"
         },
         {
+          "name": "workflow_status",
+          "passed": true,
+          "expected": "null",
+          "actual": "null"
+        },
+        {
+          "name": "verifier_status",
+          "passed": true,
+          "expected": "null",
+          "actual": "null"
+        },
+        {
           "name": "required_tool_recall",
           "passed": true,
           "expected": "1/1",
@@ -364,6 +400,18 @@
           "passed": true,
           "expected": "true",
           "actual": "true"
+        },
+        {
+          "name": "workflow_status",
+          "passed": true,
+          "expected": "null",
+          "actual": "null"
+        },
+        {
+          "name": "verifier_status",
+          "passed": true,
+          "expected": "null",
+          "actual": "null"
         },
         {
           "name": "required_tool_recall",
@@ -472,6 +520,18 @@
           "actual": "false"
         },
         {
+          "name": "workflow_status",
+          "passed": true,
+          "expected": "null",
+          "actual": "null"
+        },
+        {
+          "name": "verifier_status",
+          "passed": true,
+          "expected": "null",
+          "actual": "null"
+        },
+        {
           "name": "required_tool_recall",
           "passed": false,
           "expected": "1/1",
@@ -574,6 +634,18 @@
           "passed": true,
           "expected": "true",
           "actual": "true"
+        },
+        {
+          "name": "workflow_status",
+          "passed": true,
+          "expected": "null",
+          "actual": "null"
+        },
+        {
+          "name": "verifier_status",
+          "passed": true,
+          "expected": "null",
+          "actual": "null"
         },
         {
           "name": "required_tool_recall",
@@ -680,6 +752,18 @@
           "passed": true,
           "expected": "true",
           "actual": "true"
+        },
+        {
+          "name": "workflow_status",
+          "passed": true,
+          "expected": "null",
+          "actual": "null"
+        },
+        {
+          "name": "verifier_status",
+          "passed": true,
+          "expected": "null",
+          "actual": "null"
         },
         {
           "name": "required_tool_recall",
@@ -788,6 +872,18 @@
           "actual": "false"
         },
         {
+          "name": "workflow_status",
+          "passed": true,
+          "expected": "null",
+          "actual": "null"
+        },
+        {
+          "name": "verifier_status",
+          "passed": true,
+          "expected": "null",
+          "actual": "null"
+        },
+        {
           "name": "required_tool_recall",
           "passed": false,
           "expected": "1/1",
@@ -890,6 +986,18 @@
           "passed": true,
           "expected": "true",
           "actual": "true"
+        },
+        {
+          "name": "workflow_status",
+          "passed": true,
+          "expected": "null",
+          "actual": "null"
+        },
+        {
+          "name": "verifier_status",
+          "passed": true,
+          "expected": "null",
+          "actual": "null"
         },
         {
           "name": "required_tool_recall",
@@ -996,6 +1104,18 @@
           "passed": true,
           "expected": "true",
           "actual": "true"
+        },
+        {
+          "name": "workflow_status",
+          "passed": true,
+          "expected": "null",
+          "actual": "null"
+        },
+        {
+          "name": "verifier_status",
+          "passed": true,
+          "expected": "null",
+          "actual": "null"
         },
         {
           "name": "required_tool_recall",
@@ -1104,6 +1224,18 @@
           "actual": "false"
         },
         {
+          "name": "workflow_status",
+          "passed": true,
+          "expected": "null",
+          "actual": "null"
+        },
+        {
+          "name": "verifier_status",
+          "passed": true,
+          "expected": "null",
+          "actual": "null"
+        },
+        {
           "name": "required_tool_recall",
           "passed": false,
           "expected": "1/1",
@@ -1206,6 +1338,18 @@
           "passed": true,
           "expected": "true",
           "actual": "true"
+        },
+        {
+          "name": "workflow_status",
+          "passed": true,
+          "expected": "null",
+          "actual": "null"
+        },
+        {
+          "name": "verifier_status",
+          "passed": true,
+          "expected": "null",
+          "actual": "null"
         },
         {
           "name": "required_tool_recall",
@@ -1312,6 +1456,18 @@
           "passed": true,
           "expected": "true",
           "actual": "true"
+        },
+        {
+          "name": "workflow_status",
+          "passed": true,
+          "expected": "null",
+          "actual": "null"
+        },
+        {
+          "name": "verifier_status",
+          "passed": true,
+          "expected": "null",
+          "actual": "null"
         },
         {
           "name": "required_tool_recall",
@@ -1420,6 +1576,18 @@
           "actual": "false"
         },
         {
+          "name": "workflow_status",
+          "passed": true,
+          "expected": "null",
+          "actual": "null"
+        },
+        {
+          "name": "verifier_status",
+          "passed": true,
+          "expected": "null",
+          "actual": "null"
+        },
+        {
           "name": "required_tool_recall",
           "passed": false,
           "expected": "1/1",
@@ -1522,6 +1690,18 @@
           "passed": true,
           "expected": "true",
           "actual": "true"
+        },
+        {
+          "name": "workflow_status",
+          "passed": true,
+          "expected": "null",
+          "actual": "null"
+        },
+        {
+          "name": "verifier_status",
+          "passed": true,
+          "expected": "null",
+          "actual": "null"
         },
         {
           "name": "required_tool_recall",
@@ -1606,16 +1786,40 @@
           "actual": "policy_version_not_found"
         },
         {
+          "name": "recommendation",
+          "passed": true,
+          "expected": "null",
+          "actual": "null"
+        },
+        {
           "name": "evidence_status",
           "passed": true,
           "expected": "complete",
           "actual": "complete"
         },
         {
+          "name": "policy_version",
+          "passed": true,
+          "expected": "null",
+          "actual": "null"
+        },
+        {
           "name": "packet_created",
           "passed": true,
           "expected": "false",
           "actual": "false"
+        },
+        {
+          "name": "workflow_status",
+          "passed": true,
+          "expected": "null",
+          "actual": "null"
+        },
+        {
+          "name": "verifier_status",
+          "passed": true,
+          "expected": "null",
+          "actual": "null"
         },
         {
           "name": "required_tool_recall",
@@ -1700,16 +1904,40 @@
           "actual": "completed"
         },
         {
+          "name": "recommendation",
+          "passed": false,
+          "expected": "null",
+          "actual": "approve_refund"
+        },
+        {
           "name": "evidence_status",
           "passed": false,
           "expected": "complete",
           "actual": "null"
         },
         {
+          "name": "policy_version",
+          "passed": false,
+          "expected": "null",
+          "actual": "v2"
+        },
+        {
           "name": "packet_created",
           "passed": true,
           "expected": "false",
           "actual": "false"
+        },
+        {
+          "name": "workflow_status",
+          "passed": true,
+          "expected": "null",
+          "actual": "null"
+        },
+        {
+          "name": "verifier_status",
+          "passed": true,
+          "expected": "null",
+          "actual": "null"
         },
         {
           "name": "required_tool_recall",
@@ -1792,16 +2020,40 @@
           "actual": "policy_version_not_found"
         },
         {
+          "name": "recommendation",
+          "passed": true,
+          "expected": "null",
+          "actual": "null"
+        },
+        {
           "name": "evidence_status",
           "passed": true,
           "expected": "complete",
           "actual": "complete"
         },
         {
+          "name": "policy_version",
+          "passed": true,
+          "expected": "null",
+          "actual": "null"
+        },
+        {
           "name": "packet_created",
           "passed": true,
           "expected": "false",
           "actual": "false"
+        },
+        {
+          "name": "workflow_status",
+          "passed": true,
+          "expected": "null",
+          "actual": "null"
+        },
+        {
+          "name": "verifier_status",
+          "passed": true,
+          "expected": "null",
+          "actual": "null"
         },
         {
           "name": "required_tool_recall",
@@ -1948,10 +2200,40 @@
           "actual": "evidence_source_error"
         },
         {
+          "name": "recommendation",
+          "passed": true,
+          "expected": "null",
+          "actual": "null"
+        },
+        {
+          "name": "evidence_status",
+          "passed": true,
+          "expected": "null",
+          "actual": "null"
+        },
+        {
+          "name": "policy_version",
+          "passed": true,
+          "expected": "null",
+          "actual": "null"
+        },
+        {
           "name": "packet_created",
           "passed": true,
           "expected": "false",
           "actual": "false"
+        },
+        {
+          "name": "workflow_status",
+          "passed": true,
+          "expected": "null",
+          "actual": "null"
+        },
+        {
+          "name": "verifier_status",
+          "passed": true,
+          "expected": "null",
+          "actual": "null"
         },
         {
           "name": "required_tool_recall",
@@ -2098,10 +2380,40 @@
           "actual": "tool_batch_error"
         },
         {
+          "name": "recommendation",
+          "passed": true,
+          "expected": "null",
+          "actual": "null"
+        },
+        {
+          "name": "evidence_status",
+          "passed": true,
+          "expected": "null",
+          "actual": "null"
+        },
+        {
+          "name": "policy_version",
+          "passed": true,
+          "expected": "null",
+          "actual": "null"
+        },
+        {
           "name": "packet_created",
           "passed": true,
           "expected": "false",
           "actual": "false"
+        },
+        {
+          "name": "workflow_status",
+          "passed": true,
+          "expected": "null",
+          "actual": "null"
+        },
+        {
+          "name": "verifier_status",
+          "passed": true,
+          "expected": "null",
+          "actual": "null"
         },
         {
           "name": "forbidden_tools",
@@ -2246,10 +2558,40 @@
           "actual": "max_steps"
         },
         {
+          "name": "recommendation",
+          "passed": true,
+          "expected": "null",
+          "actual": "null"
+        },
+        {
+          "name": "evidence_status",
+          "passed": true,
+          "expected": "null",
+          "actual": "null"
+        },
+        {
+          "name": "policy_version",
+          "passed": true,
+          "expected": "null",
+          "actual": "null"
+        },
+        {
           "name": "packet_created",
           "passed": true,
           "expected": "false",
           "actual": "false"
+        },
+        {
+          "name": "workflow_status",
+          "passed": true,
+          "expected": "null",
+          "actual": "null"
+        },
+        {
+          "name": "verifier_status",
+          "passed": true,
+          "expected": "null",
+          "actual": "null"
         },
         {
           "name": "required_tool_recall",
@@ -2396,6 +2738,12 @@
           "actual": "invalid_draft"
         },
         {
+          "name": "recommendation",
+          "passed": true,
+          "expected": "null",
+          "actual": "null"
+        },
+        {
           "name": "evidence_status",
           "passed": true,
           "expected": "complete",
@@ -2412,6 +2760,18 @@
           "passed": true,
           "expected": "false",
           "actual": "false"
+        },
+        {
+          "name": "workflow_status",
+          "passed": true,
+          "expected": "null",
+          "actual": "null"
+        },
+        {
+          "name": "verifier_status",
+          "passed": true,
+          "expected": "null",
+          "actual": "null"
         },
         {
           "name": "required_tool_recall",

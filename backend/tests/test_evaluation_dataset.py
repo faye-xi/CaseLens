@@ -65,3 +65,13 @@ def test_rejects_malformed_json_without_exposing_the_path(tmp_path: Path) -> Non
         load_golden_cases(path)
 
     assert str(path) not in str(exc_info.value)
+
+
+def test_missing_dataset_error_does_not_expose_the_path(tmp_path: Path) -> None:
+    path = tmp_path / "private-location" / "missing.json"
+
+    with pytest.raises(EvaluationDatasetError) as exc_info:
+        load_golden_cases(path)
+
+    assert str(path) not in str(exc_info.value)
+    assert str(exc_info.value) == "Unable to read evaluation dataset."

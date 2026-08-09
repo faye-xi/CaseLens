@@ -56,6 +56,39 @@ def render_markdown(report: EvaluationReport) -> str:
     lines.extend(
         [
             "",
+            "## Metric details",
+            "",
+            "| Baseline | Metric | Numerator | Denominator | Value | Measurement |",
+            "| --- | --- | ---: | ---: | ---: | --- |",
+        ]
+    )
+    for summary in report.summaries:
+        for metric_name, metric in summary.metrics.items():
+            value = "not_measured" if metric.value is None else str(metric.value)
+            lines.append(
+                f"| `{summary.baseline_id.value}` | `{metric_name}` | "
+                f"{metric.numerator} | {metric.denominator} | {value} | "
+                f"{metric.measurement.value} |"
+            )
+
+    lines.extend(
+        [
+            "",
+            "## Measurement coverage",
+            "",
+            "| Baseline | Token usage | Real latency |",
+            "| --- | --- | --- |",
+        ]
+    )
+    for summary in report.summaries:
+        lines.append(
+            f"| `{summary.baseline_id.value}` | {summary.token_measurement.value} | "
+            f"{summary.latency_measurement.value} |"
+        )
+
+    lines.extend(
+        [
+            "",
             "## Golden Case results",
             "",
             "| Case | Baseline | Status | Failed assertions |",
@@ -70,6 +103,32 @@ def render_markdown(report: EvaluationReport) -> str:
             f"| `{grade.case_id}` | `{grade.baseline_id.value}` | "
             f"{grade.status.value} | {failed or 'none'} |"
         )
+
+    lines.extend(
+        [
+            "",
+            "## Failure catalog",
+            "",
+            "| Case | Baseline | Assertion | Expected | Actual |",
+            "| --- | --- | --- | --- | --- |",
+        ]
+    )
+    failed_assertions = tuple(
+        (grade, assertion)
+        for grade in report.grades
+        for assertion in grade.assertions
+        if not assertion.passed
+    )
+    if failed_assertions:
+        for grade, assertion in failed_assertions:
+            lines.append(
+                f"| `{_markdown_cell(grade.case_id)}` | "
+                f"`{grade.baseline_id.value}` | `{_markdown_cell(assertion.name)}` | "
+                f"`{_markdown_cell(assertion.expected)}` | "
+                f"`{_markdown_cell(assertion.actual)}` |"
+            )
+    else:
+        lines.append("| none | none | none | none | none |")
 
     lines.extend(["", "## Limitations", ""])
     lines.extend(f"- {limitation}" for limitation in report.limitations)
@@ -106,13 +165,24 @@ def write_report(
     markdown_target.parent.mkdir(parents=True, exist_ok=True)
     json_temp = json_target.with_name(f"{json_target.name}.tmp")
     markdown_temp = markdown_target.with_name(f"{markdown_target.name}.tmp")
+    original_json = _read_existing(json_target)
+    original_markdown = _read_existing(markdown_target)
+    json_replaced = False
+    markdown_replaced = False
     try:
         json_temp.write_text(render_json(report), encoding="utf-8", newline="\n")
         markdown_temp.write_text(
             render_markdown(report), encoding="utf-8", newline="\n"
         )
         json_temp.replace(json_target)
+        json_replaced = True
         markdown_temp.replace(markdown_target)
+        markdown_replaced = True
+    except OSError:
+        if json_replaced and not markdown_replaced:
+            _restore_existing(json_target, original_json)
+            _restore_existing(markdown_target, original_markdown)
+        raise
     finally:
         json_temp.unlink(missing_ok=True)
         markdown_temp.unlink(missing_ok=True)
@@ -131,3 +201,21 @@ def reports_match(
     return existing_json == render_json(
         report
     ) and existing_markdown == render_markdown(report)
+
+
+def _read_existing(path: Path) -> bytes | None:
+    try:
+        return path.read_bytes()
+    except FileNotFoundError:
+        return None
+
+
+def _restore_existing(path: Path, content: bytes | None) -> None:
+    if content is None:
+        path.unlink(missing_ok=True)
+    else:
+        path.write_bytes(content)
+
+
+def _markdown_cell(value: str) -> str:
+    return value.replace("|", "\\|").replace("\r", " ").replace("\n", " ")

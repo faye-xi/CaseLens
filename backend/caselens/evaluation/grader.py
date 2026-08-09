@@ -76,8 +76,6 @@ def grade_case(case: GoldenCase, outcome: EvaluationOutcome) -> CaseGrade:
     assertions: list[AssertionResult] = []
 
     def compare(name: str, expected_value: object, actual_value: object) -> None:
-        if expected_value is None:
-            return
         expected_text = _value_text(expected_value)
         actual_text = _value_text(actual_value)
         assertions.append(
@@ -271,7 +269,7 @@ def _assertion_rate(
         assertion
         for grade in grades
         for assertion in grade.assertions
-        if assertion.name == assertion_name
+        if assertion.name == assertion_name and assertion.expected != "null"
     )
     return _rate(sum(assertion.passed for assertion in assertions), len(assertions))
 

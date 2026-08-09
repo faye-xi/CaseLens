@@ -22,8 +22,12 @@ class EvaluationDataset(BaseModel):
 def load_golden_cases(path: str | Path) -> tuple[GoldenCase, ...]:
     try:
         raw = Path(path).read_text(encoding="utf-8")
+    except (OSError, UnicodeError):
+        raise EvaluationDatasetError("Unable to read evaluation dataset.") from None
+
+    try:
         dataset = EvaluationDataset.model_validate_json(raw)
-    except (OSError, UnicodeError, json.JSONDecodeError, ValidationError) as exc:
+    except (json.JSONDecodeError, ValidationError) as exc:
         raise EvaluationDatasetError(f"Invalid evaluation dataset: {exc}") from None
 
     case_ids = tuple(case.case_id for case in dataset.cases)
