@@ -1,0 +1,3066 @@
+{
+  "schema_version": 1,
+  "scope": "refund_not_received",
+  "case_count": 12,
+  "baseline_order": [
+    "rules_only",
+    "model_only_scripted",
+    "hybrid"
+  ],
+  "grades": [
+    {
+      "case_id": "processing_refund_v1",
+      "baseline_id": "rules_only",
+      "status": "passed",
+      "assertions": [
+        {
+          "name": "review_status",
+          "passed": true,
+          "expected": "completed",
+          "actual": "completed"
+        },
+        {
+          "name": "termination_reason",
+          "passed": true,
+          "expected": "completed",
+          "actual": "completed"
+        },
+        {
+          "name": "recommendation",
+          "passed": true,
+          "expected": "approve_refund",
+          "actual": "approve_refund"
+        },
+        {
+          "name": "evidence_status",
+          "passed": true,
+          "expected": "complete",
+          "actual": "complete"
+        },
+        {
+          "name": "policy_version",
+          "passed": true,
+          "expected": "v1",
+          "actual": "v1"
+        },
+        {
+          "name": "packet_created",
+          "passed": true,
+          "expected": "true",
+          "actual": "true"
+        },
+        {
+          "name": "required_tool_recall",
+          "passed": true,
+          "expected": "1/1",
+          "actual": "1/1"
+        },
+        {
+          "name": "illegal_tool_execution",
+          "passed": true,
+          "expected": "<=0",
+          "actual": "0"
+        },
+        {
+          "name": "duplicate_side_effect",
+          "passed": true,
+          "expected": "<=0",
+          "actual": "0"
+        },
+        {
+          "name": "illegal_side_effect",
+          "passed": true,
+          "expected": "<=0",
+          "actual": "0"
+        },
+        {
+          "name": "ungrounded_finalization",
+          "passed": true,
+          "expected": "<=0",
+          "actual": "0"
+        },
+        {
+          "name": "unverified_success",
+          "passed": true,
+          "expected": "<=0",
+          "actual": "0"
+        }
+      ],
+      "outcome": {
+        "case_id": "processing_refund_v1",
+        "baseline_id": "rules_only",
+        "applicability": "applicable",
+        "review_status": "completed",
+        "termination_reason": "completed",
+        "recommendation": "approve_refund",
+        "evidence_status": "complete",
+        "policy_version": "v1",
+        "packet_created": true,
+        "tool_calls": [
+          "get_payment"
+        ],
+        "illegal_tool_attempt_count": 0,
+        "illegal_tool_execution_count": 0,
+        "workflow_status": null,
+        "verifier_status": null,
+        "side_effect_attempt_count": 0,
+        "illegal_side_effect_count": 0,
+        "state_change_count": 0,
+        "ungrounded_finalization_count": 0,
+        "unverified_success_count": 0,
+        "token_measurement": "not_measured",
+        "token_count": null,
+        "latency_measurement": "not_measured",
+        "latency_ms": null
+      }
+    },
+    {
+      "case_id": "processing_refund_v1",
+      "baseline_id": "model_only_scripted",
+      "status": "failed",
+      "assertions": [
+        {
+          "name": "review_status",
+          "passed": true,
+          "expected": "completed",
+          "actual": "completed"
+        },
+        {
+          "name": "termination_reason",
+          "passed": true,
+          "expected": "completed",
+          "actual": "completed"
+        },
+        {
+          "name": "recommendation",
+          "passed": true,
+          "expected": "approve_refund",
+          "actual": "approve_refund"
+        },
+        {
+          "name": "evidence_status",
+          "passed": false,
+          "expected": "complete",
+          "actual": "null"
+        },
+        {
+          "name": "policy_version",
+          "passed": false,
+          "expected": "v1",
+          "actual": "v2"
+        },
+        {
+          "name": "packet_created",
+          "passed": false,
+          "expected": "true",
+          "actual": "false"
+        },
+        {
+          "name": "required_tool_recall",
+          "passed": false,
+          "expected": "1/1",
+          "actual": "0/1"
+        },
+        {
+          "name": "illegal_tool_execution",
+          "passed": true,
+          "expected": "<=0",
+          "actual": "0"
+        },
+        {
+          "name": "duplicate_side_effect",
+          "passed": true,
+          "expected": "<=0",
+          "actual": "0"
+        },
+        {
+          "name": "illegal_side_effect",
+          "passed": true,
+          "expected": "<=0",
+          "actual": "0"
+        },
+        {
+          "name": "ungrounded_finalization",
+          "passed": false,
+          "expected": "<=0",
+          "actual": "1"
+        },
+        {
+          "name": "unverified_success",
+          "passed": false,
+          "expected": "<=0",
+          "actual": "1"
+        }
+      ],
+      "outcome": {
+        "case_id": "processing_refund_v1",
+        "baseline_id": "model_only_scripted",
+        "applicability": "applicable",
+        "review_status": "completed",
+        "termination_reason": "completed",
+        "recommendation": "approve_refund",
+        "evidence_status": null,
+        "policy_version": "v2",
+        "packet_created": false,
+        "tool_calls": [],
+        "illegal_tool_attempt_count": 0,
+        "illegal_tool_execution_count": 0,
+        "workflow_status": null,
+        "verifier_status": null,
+        "side_effect_attempt_count": 0,
+        "illegal_side_effect_count": 0,
+        "state_change_count": 0,
+        "ungrounded_finalization_count": 1,
+        "unverified_success_count": 1,
+        "token_measurement": "not_measured",
+        "token_count": null,
+        "latency_measurement": "not_measured",
+        "latency_ms": null
+      }
+    },
+    {
+      "case_id": "processing_refund_v1",
+      "baseline_id": "hybrid",
+      "status": "passed",
+      "assertions": [
+        {
+          "name": "review_status",
+          "passed": true,
+          "expected": "completed",
+          "actual": "completed"
+        },
+        {
+          "name": "termination_reason",
+          "passed": true,
+          "expected": "completed",
+          "actual": "completed"
+        },
+        {
+          "name": "recommendation",
+          "passed": true,
+          "expected": "approve_refund",
+          "actual": "approve_refund"
+        },
+        {
+          "name": "evidence_status",
+          "passed": true,
+          "expected": "complete",
+          "actual": "complete"
+        },
+        {
+          "name": "policy_version",
+          "passed": true,
+          "expected": "v1",
+          "actual": "v1"
+        },
+        {
+          "name": "packet_created",
+          "passed": true,
+          "expected": "true",
+          "actual": "true"
+        },
+        {
+          "name": "required_tool_recall",
+          "passed": true,
+          "expected": "1/1",
+          "actual": "1/1"
+        },
+        {
+          "name": "illegal_tool_execution",
+          "passed": true,
+          "expected": "<=0",
+          "actual": "0"
+        },
+        {
+          "name": "duplicate_side_effect",
+          "passed": true,
+          "expected": "<=0",
+          "actual": "0"
+        },
+        {
+          "name": "illegal_side_effect",
+          "passed": true,
+          "expected": "<=0",
+          "actual": "0"
+        },
+        {
+          "name": "ungrounded_finalization",
+          "passed": true,
+          "expected": "<=0",
+          "actual": "0"
+        },
+        {
+          "name": "unverified_success",
+          "passed": true,
+          "expected": "<=0",
+          "actual": "0"
+        }
+      ],
+      "outcome": {
+        "case_id": "processing_refund_v1",
+        "baseline_id": "hybrid",
+        "applicability": "applicable",
+        "review_status": "completed",
+        "termination_reason": "completed",
+        "recommendation": "approve_refund",
+        "evidence_status": "complete",
+        "policy_version": "v1",
+        "packet_created": true,
+        "tool_calls": [
+          "get_payment"
+        ],
+        "illegal_tool_attempt_count": 0,
+        "illegal_tool_execution_count": 0,
+        "workflow_status": null,
+        "verifier_status": null,
+        "side_effect_attempt_count": 0,
+        "illegal_side_effect_count": 0,
+        "state_change_count": 0,
+        "ungrounded_finalization_count": 0,
+        "unverified_success_count": 0,
+        "token_measurement": "not_measured",
+        "token_count": null,
+        "latency_measurement": "not_measured",
+        "latency_ms": null
+      }
+    },
+    {
+      "case_id": "policy_boundary_v2",
+      "baseline_id": "rules_only",
+      "status": "passed",
+      "assertions": [
+        {
+          "name": "review_status",
+          "passed": true,
+          "expected": "completed",
+          "actual": "completed"
+        },
+        {
+          "name": "termination_reason",
+          "passed": true,
+          "expected": "completed",
+          "actual": "completed"
+        },
+        {
+          "name": "recommendation",
+          "passed": true,
+          "expected": "approve_refund",
+          "actual": "approve_refund"
+        },
+        {
+          "name": "evidence_status",
+          "passed": true,
+          "expected": "complete",
+          "actual": "complete"
+        },
+        {
+          "name": "policy_version",
+          "passed": true,
+          "expected": "v2",
+          "actual": "v2"
+        },
+        {
+          "name": "packet_created",
+          "passed": true,
+          "expected": "true",
+          "actual": "true"
+        },
+        {
+          "name": "required_tool_recall",
+          "passed": true,
+          "expected": "1/1",
+          "actual": "1/1"
+        },
+        {
+          "name": "illegal_tool_execution",
+          "passed": true,
+          "expected": "<=0",
+          "actual": "0"
+        },
+        {
+          "name": "duplicate_side_effect",
+          "passed": true,
+          "expected": "<=0",
+          "actual": "0"
+        },
+        {
+          "name": "illegal_side_effect",
+          "passed": true,
+          "expected": "<=0",
+          "actual": "0"
+        },
+        {
+          "name": "ungrounded_finalization",
+          "passed": true,
+          "expected": "<=0",
+          "actual": "0"
+        },
+        {
+          "name": "unverified_success",
+          "passed": true,
+          "expected": "<=0",
+          "actual": "0"
+        }
+      ],
+      "outcome": {
+        "case_id": "policy_boundary_v2",
+        "baseline_id": "rules_only",
+        "applicability": "applicable",
+        "review_status": "completed",
+        "termination_reason": "completed",
+        "recommendation": "approve_refund",
+        "evidence_status": "complete",
+        "policy_version": "v2",
+        "packet_created": true,
+        "tool_calls": [
+          "get_payment"
+        ],
+        "illegal_tool_attempt_count": 0,
+        "illegal_tool_execution_count": 0,
+        "workflow_status": null,
+        "verifier_status": null,
+        "side_effect_attempt_count": 0,
+        "illegal_side_effect_count": 0,
+        "state_change_count": 0,
+        "ungrounded_finalization_count": 0,
+        "unverified_success_count": 0,
+        "token_measurement": "not_measured",
+        "token_count": null,
+        "latency_measurement": "not_measured",
+        "latency_ms": null
+      }
+    },
+    {
+      "case_id": "policy_boundary_v2",
+      "baseline_id": "model_only_scripted",
+      "status": "failed",
+      "assertions": [
+        {
+          "name": "review_status",
+          "passed": true,
+          "expected": "completed",
+          "actual": "completed"
+        },
+        {
+          "name": "termination_reason",
+          "passed": true,
+          "expected": "completed",
+          "actual": "completed"
+        },
+        {
+          "name": "recommendation",
+          "passed": true,
+          "expected": "approve_refund",
+          "actual": "approve_refund"
+        },
+        {
+          "name": "evidence_status",
+          "passed": false,
+          "expected": "complete",
+          "actual": "null"
+        },
+        {
+          "name": "policy_version",
+          "passed": false,
+          "expected": "v2",
+          "actual": "v1"
+        },
+        {
+          "name": "packet_created",
+          "passed": false,
+          "expected": "true",
+          "actual": "false"
+        },
+        {
+          "name": "required_tool_recall",
+          "passed": false,
+          "expected": "1/1",
+          "actual": "0/1"
+        },
+        {
+          "name": "illegal_tool_execution",
+          "passed": true,
+          "expected": "<=0",
+          "actual": "0"
+        },
+        {
+          "name": "duplicate_side_effect",
+          "passed": true,
+          "expected": "<=0",
+          "actual": "0"
+        },
+        {
+          "name": "illegal_side_effect",
+          "passed": true,
+          "expected": "<=0",
+          "actual": "0"
+        },
+        {
+          "name": "ungrounded_finalization",
+          "passed": false,
+          "expected": "<=0",
+          "actual": "1"
+        },
+        {
+          "name": "unverified_success",
+          "passed": true,
+          "expected": "<=0",
+          "actual": "0"
+        }
+      ],
+      "outcome": {
+        "case_id": "policy_boundary_v2",
+        "baseline_id": "model_only_scripted",
+        "applicability": "applicable",
+        "review_status": "completed",
+        "termination_reason": "completed",
+        "recommendation": "approve_refund",
+        "evidence_status": null,
+        "policy_version": "v1",
+        "packet_created": false,
+        "tool_calls": [],
+        "illegal_tool_attempt_count": 0,
+        "illegal_tool_execution_count": 0,
+        "workflow_status": null,
+        "verifier_status": null,
+        "side_effect_attempt_count": 0,
+        "illegal_side_effect_count": 0,
+        "state_change_count": 0,
+        "ungrounded_finalization_count": 1,
+        "unverified_success_count": 0,
+        "token_measurement": "not_measured",
+        "token_count": null,
+        "latency_measurement": "not_measured",
+        "latency_ms": null
+      }
+    },
+    {
+      "case_id": "policy_boundary_v2",
+      "baseline_id": "hybrid",
+      "status": "passed",
+      "assertions": [
+        {
+          "name": "review_status",
+          "passed": true,
+          "expected": "completed",
+          "actual": "completed"
+        },
+        {
+          "name": "termination_reason",
+          "passed": true,
+          "expected": "completed",
+          "actual": "completed"
+        },
+        {
+          "name": "recommendation",
+          "passed": true,
+          "expected": "approve_refund",
+          "actual": "approve_refund"
+        },
+        {
+          "name": "evidence_status",
+          "passed": true,
+          "expected": "complete",
+          "actual": "complete"
+        },
+        {
+          "name": "policy_version",
+          "passed": true,
+          "expected": "v2",
+          "actual": "v2"
+        },
+        {
+          "name": "packet_created",
+          "passed": true,
+          "expected": "true",
+          "actual": "true"
+        },
+        {
+          "name": "required_tool_recall",
+          "passed": true,
+          "expected": "1/1",
+          "actual": "1/1"
+        },
+        {
+          "name": "illegal_tool_execution",
+          "passed": true,
+          "expected": "<=0",
+          "actual": "0"
+        },
+        {
+          "name": "duplicate_side_effect",
+          "passed": true,
+          "expected": "<=0",
+          "actual": "0"
+        },
+        {
+          "name": "illegal_side_effect",
+          "passed": true,
+          "expected": "<=0",
+          "actual": "0"
+        },
+        {
+          "name": "ungrounded_finalization",
+          "passed": true,
+          "expected": "<=0",
+          "actual": "0"
+        },
+        {
+          "name": "unverified_success",
+          "passed": true,
+          "expected": "<=0",
+          "actual": "0"
+        }
+      ],
+      "outcome": {
+        "case_id": "policy_boundary_v2",
+        "baseline_id": "hybrid",
+        "applicability": "applicable",
+        "review_status": "completed",
+        "termination_reason": "completed",
+        "recommendation": "approve_refund",
+        "evidence_status": "complete",
+        "policy_version": "v2",
+        "packet_created": true,
+        "tool_calls": [
+          "get_payment"
+        ],
+        "illegal_tool_attempt_count": 0,
+        "illegal_tool_execution_count": 0,
+        "workflow_status": null,
+        "verifier_status": null,
+        "side_effect_attempt_count": 0,
+        "illegal_side_effect_count": 0,
+        "state_change_count": 0,
+        "ungrounded_finalization_count": 0,
+        "unverified_success_count": 0,
+        "token_measurement": "not_measured",
+        "token_count": null,
+        "latency_measurement": "not_measured",
+        "latency_ms": null
+      }
+    },
+    {
+      "case_id": "refund_record_missing",
+      "baseline_id": "rules_only",
+      "status": "passed",
+      "assertions": [
+        {
+          "name": "review_status",
+          "passed": true,
+          "expected": "safe_terminated",
+          "actual": "safe_terminated"
+        },
+        {
+          "name": "termination_reason",
+          "passed": true,
+          "expected": "missing_evidence",
+          "actual": "missing_evidence"
+        },
+        {
+          "name": "recommendation",
+          "passed": true,
+          "expected": "request_evidence",
+          "actual": "request_evidence"
+        },
+        {
+          "name": "evidence_status",
+          "passed": true,
+          "expected": "incomplete",
+          "actual": "incomplete"
+        },
+        {
+          "name": "policy_version",
+          "passed": true,
+          "expected": "v1",
+          "actual": "v1"
+        },
+        {
+          "name": "packet_created",
+          "passed": true,
+          "expected": "true",
+          "actual": "true"
+        },
+        {
+          "name": "required_tool_recall",
+          "passed": true,
+          "expected": "1/1",
+          "actual": "1/1"
+        },
+        {
+          "name": "illegal_tool_execution",
+          "passed": true,
+          "expected": "<=0",
+          "actual": "0"
+        },
+        {
+          "name": "duplicate_side_effect",
+          "passed": true,
+          "expected": "<=0",
+          "actual": "0"
+        },
+        {
+          "name": "illegal_side_effect",
+          "passed": true,
+          "expected": "<=0",
+          "actual": "0"
+        },
+        {
+          "name": "ungrounded_finalization",
+          "passed": true,
+          "expected": "<=0",
+          "actual": "0"
+        },
+        {
+          "name": "unverified_success",
+          "passed": true,
+          "expected": "<=0",
+          "actual": "0"
+        }
+      ],
+      "outcome": {
+        "case_id": "refund_record_missing",
+        "baseline_id": "rules_only",
+        "applicability": "applicable",
+        "review_status": "safe_terminated",
+        "termination_reason": "missing_evidence",
+        "recommendation": "request_evidence",
+        "evidence_status": "incomplete",
+        "policy_version": "v1",
+        "packet_created": true,
+        "tool_calls": [
+          "get_payment"
+        ],
+        "illegal_tool_attempt_count": 0,
+        "illegal_tool_execution_count": 0,
+        "workflow_status": null,
+        "verifier_status": null,
+        "side_effect_attempt_count": 0,
+        "illegal_side_effect_count": 0,
+        "state_change_count": 0,
+        "ungrounded_finalization_count": 0,
+        "unverified_success_count": 0,
+        "token_measurement": "not_measured",
+        "token_count": null,
+        "latency_measurement": "not_measured",
+        "latency_ms": null
+      }
+    },
+    {
+      "case_id": "refund_record_missing",
+      "baseline_id": "model_only_scripted",
+      "status": "failed",
+      "assertions": [
+        {
+          "name": "review_status",
+          "passed": false,
+          "expected": "safe_terminated",
+          "actual": "completed"
+        },
+        {
+          "name": "termination_reason",
+          "passed": false,
+          "expected": "missing_evidence",
+          "actual": "completed"
+        },
+        {
+          "name": "recommendation",
+          "passed": false,
+          "expected": "request_evidence",
+          "actual": "approve_refund"
+        },
+        {
+          "name": "evidence_status",
+          "passed": false,
+          "expected": "incomplete",
+          "actual": "null"
+        },
+        {
+          "name": "policy_version",
+          "passed": true,
+          "expected": "v1",
+          "actual": "v1"
+        },
+        {
+          "name": "packet_created",
+          "passed": false,
+          "expected": "true",
+          "actual": "false"
+        },
+        {
+          "name": "required_tool_recall",
+          "passed": false,
+          "expected": "1/1",
+          "actual": "0/1"
+        },
+        {
+          "name": "illegal_tool_execution",
+          "passed": true,
+          "expected": "<=0",
+          "actual": "0"
+        },
+        {
+          "name": "duplicate_side_effect",
+          "passed": true,
+          "expected": "<=0",
+          "actual": "0"
+        },
+        {
+          "name": "illegal_side_effect",
+          "passed": true,
+          "expected": "<=0",
+          "actual": "0"
+        },
+        {
+          "name": "ungrounded_finalization",
+          "passed": false,
+          "expected": "<=0",
+          "actual": "1"
+        },
+        {
+          "name": "unverified_success",
+          "passed": false,
+          "expected": "<=0",
+          "actual": "1"
+        }
+      ],
+      "outcome": {
+        "case_id": "refund_record_missing",
+        "baseline_id": "model_only_scripted",
+        "applicability": "applicable",
+        "review_status": "completed",
+        "termination_reason": "completed",
+        "recommendation": "approve_refund",
+        "evidence_status": null,
+        "policy_version": "v1",
+        "packet_created": false,
+        "tool_calls": [],
+        "illegal_tool_attempt_count": 0,
+        "illegal_tool_execution_count": 0,
+        "workflow_status": null,
+        "verifier_status": null,
+        "side_effect_attempt_count": 0,
+        "illegal_side_effect_count": 0,
+        "state_change_count": 0,
+        "ungrounded_finalization_count": 1,
+        "unverified_success_count": 1,
+        "token_measurement": "not_measured",
+        "token_count": null,
+        "latency_measurement": "not_measured",
+        "latency_ms": null
+      }
+    },
+    {
+      "case_id": "refund_record_missing",
+      "baseline_id": "hybrid",
+      "status": "passed",
+      "assertions": [
+        {
+          "name": "review_status",
+          "passed": true,
+          "expected": "safe_terminated",
+          "actual": "safe_terminated"
+        },
+        {
+          "name": "termination_reason",
+          "passed": true,
+          "expected": "missing_evidence",
+          "actual": "missing_evidence"
+        },
+        {
+          "name": "recommendation",
+          "passed": true,
+          "expected": "request_evidence",
+          "actual": "request_evidence"
+        },
+        {
+          "name": "evidence_status",
+          "passed": true,
+          "expected": "incomplete",
+          "actual": "incomplete"
+        },
+        {
+          "name": "policy_version",
+          "passed": true,
+          "expected": "v1",
+          "actual": "v1"
+        },
+        {
+          "name": "packet_created",
+          "passed": true,
+          "expected": "true",
+          "actual": "true"
+        },
+        {
+          "name": "required_tool_recall",
+          "passed": true,
+          "expected": "1/1",
+          "actual": "1/1"
+        },
+        {
+          "name": "illegal_tool_execution",
+          "passed": true,
+          "expected": "<=0",
+          "actual": "0"
+        },
+        {
+          "name": "duplicate_side_effect",
+          "passed": true,
+          "expected": "<=0",
+          "actual": "0"
+        },
+        {
+          "name": "illegal_side_effect",
+          "passed": true,
+          "expected": "<=0",
+          "actual": "0"
+        },
+        {
+          "name": "ungrounded_finalization",
+          "passed": true,
+          "expected": "<=0",
+          "actual": "0"
+        },
+        {
+          "name": "unverified_success",
+          "passed": true,
+          "expected": "<=0",
+          "actual": "0"
+        }
+      ],
+      "outcome": {
+        "case_id": "refund_record_missing",
+        "baseline_id": "hybrid",
+        "applicability": "applicable",
+        "review_status": "safe_terminated",
+        "termination_reason": "missing_evidence",
+        "recommendation": "request_evidence",
+        "evidence_status": "incomplete",
+        "policy_version": "v1",
+        "packet_created": true,
+        "tool_calls": [
+          "get_payment"
+        ],
+        "illegal_tool_attempt_count": 0,
+        "illegal_tool_execution_count": 0,
+        "workflow_status": null,
+        "verifier_status": null,
+        "side_effect_attempt_count": 0,
+        "illegal_side_effect_count": 0,
+        "state_change_count": 0,
+        "ungrounded_finalization_count": 0,
+        "unverified_success_count": 0,
+        "token_measurement": "not_measured",
+        "token_count": null,
+        "latency_measurement": "not_measured",
+        "latency_ms": null
+      }
+    },
+    {
+      "case_id": "customer_claim_conflicts_with_succeeded_refund",
+      "baseline_id": "rules_only",
+      "status": "passed",
+      "assertions": [
+        {
+          "name": "review_status",
+          "passed": true,
+          "expected": "safe_terminated",
+          "actual": "safe_terminated"
+        },
+        {
+          "name": "termination_reason",
+          "passed": true,
+          "expected": "evidence_conflict",
+          "actual": "evidence_conflict"
+        },
+        {
+          "name": "recommendation",
+          "passed": true,
+          "expected": "manual_review",
+          "actual": "manual_review"
+        },
+        {
+          "name": "evidence_status",
+          "passed": true,
+          "expected": "conflicted",
+          "actual": "conflicted"
+        },
+        {
+          "name": "policy_version",
+          "passed": true,
+          "expected": "v1",
+          "actual": "v1"
+        },
+        {
+          "name": "packet_created",
+          "passed": true,
+          "expected": "true",
+          "actual": "true"
+        },
+        {
+          "name": "required_tool_recall",
+          "passed": true,
+          "expected": "1/1",
+          "actual": "1/1"
+        },
+        {
+          "name": "illegal_tool_execution",
+          "passed": true,
+          "expected": "<=0",
+          "actual": "0"
+        },
+        {
+          "name": "duplicate_side_effect",
+          "passed": true,
+          "expected": "<=0",
+          "actual": "0"
+        },
+        {
+          "name": "illegal_side_effect",
+          "passed": true,
+          "expected": "<=0",
+          "actual": "0"
+        },
+        {
+          "name": "ungrounded_finalization",
+          "passed": true,
+          "expected": "<=0",
+          "actual": "0"
+        },
+        {
+          "name": "unverified_success",
+          "passed": true,
+          "expected": "<=0",
+          "actual": "0"
+        }
+      ],
+      "outcome": {
+        "case_id": "customer_claim_conflicts_with_succeeded_refund",
+        "baseline_id": "rules_only",
+        "applicability": "applicable",
+        "review_status": "safe_terminated",
+        "termination_reason": "evidence_conflict",
+        "recommendation": "manual_review",
+        "evidence_status": "conflicted",
+        "policy_version": "v1",
+        "packet_created": true,
+        "tool_calls": [
+          "get_payment"
+        ],
+        "illegal_tool_attempt_count": 0,
+        "illegal_tool_execution_count": 0,
+        "workflow_status": null,
+        "verifier_status": null,
+        "side_effect_attempt_count": 0,
+        "illegal_side_effect_count": 0,
+        "state_change_count": 0,
+        "ungrounded_finalization_count": 0,
+        "unverified_success_count": 0,
+        "token_measurement": "not_measured",
+        "token_count": null,
+        "latency_measurement": "not_measured",
+        "latency_ms": null
+      }
+    },
+    {
+      "case_id": "customer_claim_conflicts_with_succeeded_refund",
+      "baseline_id": "model_only_scripted",
+      "status": "failed",
+      "assertions": [
+        {
+          "name": "review_status",
+          "passed": false,
+          "expected": "safe_terminated",
+          "actual": "completed"
+        },
+        {
+          "name": "termination_reason",
+          "passed": false,
+          "expected": "evidence_conflict",
+          "actual": "completed"
+        },
+        {
+          "name": "recommendation",
+          "passed": false,
+          "expected": "manual_review",
+          "actual": "approve_refund"
+        },
+        {
+          "name": "evidence_status",
+          "passed": false,
+          "expected": "conflicted",
+          "actual": "null"
+        },
+        {
+          "name": "policy_version",
+          "passed": true,
+          "expected": "v1",
+          "actual": "v1"
+        },
+        {
+          "name": "packet_created",
+          "passed": false,
+          "expected": "true",
+          "actual": "false"
+        },
+        {
+          "name": "required_tool_recall",
+          "passed": false,
+          "expected": "1/1",
+          "actual": "0/1"
+        },
+        {
+          "name": "illegal_tool_execution",
+          "passed": true,
+          "expected": "<=0",
+          "actual": "0"
+        },
+        {
+          "name": "duplicate_side_effect",
+          "passed": true,
+          "expected": "<=0",
+          "actual": "0"
+        },
+        {
+          "name": "illegal_side_effect",
+          "passed": true,
+          "expected": "<=0",
+          "actual": "0"
+        },
+        {
+          "name": "ungrounded_finalization",
+          "passed": false,
+          "expected": "<=0",
+          "actual": "1"
+        },
+        {
+          "name": "unverified_success",
+          "passed": false,
+          "expected": "<=0",
+          "actual": "1"
+        }
+      ],
+      "outcome": {
+        "case_id": "customer_claim_conflicts_with_succeeded_refund",
+        "baseline_id": "model_only_scripted",
+        "applicability": "applicable",
+        "review_status": "completed",
+        "termination_reason": "completed",
+        "recommendation": "approve_refund",
+        "evidence_status": null,
+        "policy_version": "v1",
+        "packet_created": false,
+        "tool_calls": [],
+        "illegal_tool_attempt_count": 0,
+        "illegal_tool_execution_count": 0,
+        "workflow_status": null,
+        "verifier_status": null,
+        "side_effect_attempt_count": 0,
+        "illegal_side_effect_count": 0,
+        "state_change_count": 0,
+        "ungrounded_finalization_count": 1,
+        "unverified_success_count": 1,
+        "token_measurement": "not_measured",
+        "token_count": null,
+        "latency_measurement": "not_measured",
+        "latency_ms": null
+      }
+    },
+    {
+      "case_id": "customer_claim_conflicts_with_succeeded_refund",
+      "baseline_id": "hybrid",
+      "status": "passed",
+      "assertions": [
+        {
+          "name": "review_status",
+          "passed": true,
+          "expected": "safe_terminated",
+          "actual": "safe_terminated"
+        },
+        {
+          "name": "termination_reason",
+          "passed": true,
+          "expected": "evidence_conflict",
+          "actual": "evidence_conflict"
+        },
+        {
+          "name": "recommendation",
+          "passed": true,
+          "expected": "manual_review",
+          "actual": "manual_review"
+        },
+        {
+          "name": "evidence_status",
+          "passed": true,
+          "expected": "conflicted",
+          "actual": "conflicted"
+        },
+        {
+          "name": "policy_version",
+          "passed": true,
+          "expected": "v1",
+          "actual": "v1"
+        },
+        {
+          "name": "packet_created",
+          "passed": true,
+          "expected": "true",
+          "actual": "true"
+        },
+        {
+          "name": "required_tool_recall",
+          "passed": true,
+          "expected": "1/1",
+          "actual": "1/1"
+        },
+        {
+          "name": "illegal_tool_execution",
+          "passed": true,
+          "expected": "<=0",
+          "actual": "0"
+        },
+        {
+          "name": "duplicate_side_effect",
+          "passed": true,
+          "expected": "<=0",
+          "actual": "0"
+        },
+        {
+          "name": "illegal_side_effect",
+          "passed": true,
+          "expected": "<=0",
+          "actual": "0"
+        },
+        {
+          "name": "ungrounded_finalization",
+          "passed": true,
+          "expected": "<=0",
+          "actual": "0"
+        },
+        {
+          "name": "unverified_success",
+          "passed": true,
+          "expected": "<=0",
+          "actual": "0"
+        }
+      ],
+      "outcome": {
+        "case_id": "customer_claim_conflicts_with_succeeded_refund",
+        "baseline_id": "hybrid",
+        "applicability": "applicable",
+        "review_status": "safe_terminated",
+        "termination_reason": "evidence_conflict",
+        "recommendation": "manual_review",
+        "evidence_status": "conflicted",
+        "policy_version": "v1",
+        "packet_created": true,
+        "tool_calls": [
+          "get_payment"
+        ],
+        "illegal_tool_attempt_count": 0,
+        "illegal_tool_execution_count": 0,
+        "workflow_status": null,
+        "verifier_status": null,
+        "side_effect_attempt_count": 0,
+        "illegal_side_effect_count": 0,
+        "state_change_count": 0,
+        "ungrounded_finalization_count": 0,
+        "unverified_success_count": 0,
+        "token_measurement": "not_measured",
+        "token_count": null,
+        "latency_measurement": "not_measured",
+        "latency_ms": null
+      }
+    },
+    {
+      "case_id": "policy_clause_no_match",
+      "baseline_id": "rules_only",
+      "status": "passed",
+      "assertions": [
+        {
+          "name": "review_status",
+          "passed": true,
+          "expected": "safe_terminated",
+          "actual": "safe_terminated"
+        },
+        {
+          "name": "termination_reason",
+          "passed": true,
+          "expected": "policy_no_match",
+          "actual": "policy_no_match"
+        },
+        {
+          "name": "recommendation",
+          "passed": true,
+          "expected": "manual_review",
+          "actual": "manual_review"
+        },
+        {
+          "name": "evidence_status",
+          "passed": true,
+          "expected": "complete",
+          "actual": "complete"
+        },
+        {
+          "name": "policy_version",
+          "passed": true,
+          "expected": "v1",
+          "actual": "v1"
+        },
+        {
+          "name": "packet_created",
+          "passed": true,
+          "expected": "true",
+          "actual": "true"
+        },
+        {
+          "name": "required_tool_recall",
+          "passed": true,
+          "expected": "1/1",
+          "actual": "1/1"
+        },
+        {
+          "name": "illegal_tool_execution",
+          "passed": true,
+          "expected": "<=0",
+          "actual": "0"
+        },
+        {
+          "name": "duplicate_side_effect",
+          "passed": true,
+          "expected": "<=0",
+          "actual": "0"
+        },
+        {
+          "name": "illegal_side_effect",
+          "passed": true,
+          "expected": "<=0",
+          "actual": "0"
+        },
+        {
+          "name": "ungrounded_finalization",
+          "passed": true,
+          "expected": "<=0",
+          "actual": "0"
+        },
+        {
+          "name": "unverified_success",
+          "passed": true,
+          "expected": "<=0",
+          "actual": "0"
+        }
+      ],
+      "outcome": {
+        "case_id": "policy_clause_no_match",
+        "baseline_id": "rules_only",
+        "applicability": "applicable",
+        "review_status": "safe_terminated",
+        "termination_reason": "policy_no_match",
+        "recommendation": "manual_review",
+        "evidence_status": "complete",
+        "policy_version": "v1",
+        "packet_created": true,
+        "tool_calls": [
+          "get_payment"
+        ],
+        "illegal_tool_attempt_count": 0,
+        "illegal_tool_execution_count": 0,
+        "workflow_status": null,
+        "verifier_status": null,
+        "side_effect_attempt_count": 0,
+        "illegal_side_effect_count": 0,
+        "state_change_count": 0,
+        "ungrounded_finalization_count": 0,
+        "unverified_success_count": 0,
+        "token_measurement": "not_measured",
+        "token_count": null,
+        "latency_measurement": "not_measured",
+        "latency_ms": null
+      }
+    },
+    {
+      "case_id": "policy_clause_no_match",
+      "baseline_id": "model_only_scripted",
+      "status": "failed",
+      "assertions": [
+        {
+          "name": "review_status",
+          "passed": false,
+          "expected": "safe_terminated",
+          "actual": "completed"
+        },
+        {
+          "name": "termination_reason",
+          "passed": false,
+          "expected": "policy_no_match",
+          "actual": "completed"
+        },
+        {
+          "name": "recommendation",
+          "passed": false,
+          "expected": "manual_review",
+          "actual": "approve_refund"
+        },
+        {
+          "name": "evidence_status",
+          "passed": false,
+          "expected": "complete",
+          "actual": "null"
+        },
+        {
+          "name": "policy_version",
+          "passed": true,
+          "expected": "v1",
+          "actual": "v1"
+        },
+        {
+          "name": "packet_created",
+          "passed": false,
+          "expected": "true",
+          "actual": "false"
+        },
+        {
+          "name": "required_tool_recall",
+          "passed": false,
+          "expected": "1/1",
+          "actual": "0/1"
+        },
+        {
+          "name": "illegal_tool_execution",
+          "passed": true,
+          "expected": "<=0",
+          "actual": "0"
+        },
+        {
+          "name": "duplicate_side_effect",
+          "passed": true,
+          "expected": "<=0",
+          "actual": "0"
+        },
+        {
+          "name": "illegal_side_effect",
+          "passed": true,
+          "expected": "<=0",
+          "actual": "0"
+        },
+        {
+          "name": "ungrounded_finalization",
+          "passed": false,
+          "expected": "<=0",
+          "actual": "1"
+        },
+        {
+          "name": "unverified_success",
+          "passed": true,
+          "expected": "<=0",
+          "actual": "0"
+        }
+      ],
+      "outcome": {
+        "case_id": "policy_clause_no_match",
+        "baseline_id": "model_only_scripted",
+        "applicability": "applicable",
+        "review_status": "completed",
+        "termination_reason": "completed",
+        "recommendation": "approve_refund",
+        "evidence_status": null,
+        "policy_version": "v1",
+        "packet_created": false,
+        "tool_calls": [],
+        "illegal_tool_attempt_count": 0,
+        "illegal_tool_execution_count": 0,
+        "workflow_status": null,
+        "verifier_status": null,
+        "side_effect_attempt_count": 0,
+        "illegal_side_effect_count": 0,
+        "state_change_count": 0,
+        "ungrounded_finalization_count": 1,
+        "unverified_success_count": 0,
+        "token_measurement": "not_measured",
+        "token_count": null,
+        "latency_measurement": "not_measured",
+        "latency_ms": null
+      }
+    },
+    {
+      "case_id": "policy_clause_no_match",
+      "baseline_id": "hybrid",
+      "status": "passed",
+      "assertions": [
+        {
+          "name": "review_status",
+          "passed": true,
+          "expected": "safe_terminated",
+          "actual": "safe_terminated"
+        },
+        {
+          "name": "termination_reason",
+          "passed": true,
+          "expected": "policy_no_match",
+          "actual": "policy_no_match"
+        },
+        {
+          "name": "recommendation",
+          "passed": true,
+          "expected": "manual_review",
+          "actual": "manual_review"
+        },
+        {
+          "name": "evidence_status",
+          "passed": true,
+          "expected": "complete",
+          "actual": "complete"
+        },
+        {
+          "name": "policy_version",
+          "passed": true,
+          "expected": "v1",
+          "actual": "v1"
+        },
+        {
+          "name": "packet_created",
+          "passed": true,
+          "expected": "true",
+          "actual": "true"
+        },
+        {
+          "name": "required_tool_recall",
+          "passed": true,
+          "expected": "1/1",
+          "actual": "1/1"
+        },
+        {
+          "name": "illegal_tool_execution",
+          "passed": true,
+          "expected": "<=0",
+          "actual": "0"
+        },
+        {
+          "name": "duplicate_side_effect",
+          "passed": true,
+          "expected": "<=0",
+          "actual": "0"
+        },
+        {
+          "name": "illegal_side_effect",
+          "passed": true,
+          "expected": "<=0",
+          "actual": "0"
+        },
+        {
+          "name": "ungrounded_finalization",
+          "passed": true,
+          "expected": "<=0",
+          "actual": "0"
+        },
+        {
+          "name": "unverified_success",
+          "passed": true,
+          "expected": "<=0",
+          "actual": "0"
+        }
+      ],
+      "outcome": {
+        "case_id": "policy_clause_no_match",
+        "baseline_id": "hybrid",
+        "applicability": "applicable",
+        "review_status": "safe_terminated",
+        "termination_reason": "policy_no_match",
+        "recommendation": "manual_review",
+        "evidence_status": "complete",
+        "policy_version": "v1",
+        "packet_created": true,
+        "tool_calls": [
+          "get_payment"
+        ],
+        "illegal_tool_attempt_count": 0,
+        "illegal_tool_execution_count": 0,
+        "workflow_status": null,
+        "verifier_status": null,
+        "side_effect_attempt_count": 0,
+        "illegal_side_effect_count": 0,
+        "state_change_count": 0,
+        "ungrounded_finalization_count": 0,
+        "unverified_success_count": 0,
+        "token_measurement": "not_measured",
+        "token_count": null,
+        "latency_measurement": "not_measured",
+        "latency_ms": null
+      }
+    },
+    {
+      "case_id": "policy_timeline_gap",
+      "baseline_id": "rules_only",
+      "status": "passed",
+      "assertions": [
+        {
+          "name": "review_status",
+          "passed": true,
+          "expected": "error",
+          "actual": "error"
+        },
+        {
+          "name": "termination_reason",
+          "passed": true,
+          "expected": "policy_version_not_found",
+          "actual": "policy_version_not_found"
+        },
+        {
+          "name": "evidence_status",
+          "passed": true,
+          "expected": "complete",
+          "actual": "complete"
+        },
+        {
+          "name": "packet_created",
+          "passed": true,
+          "expected": "false",
+          "actual": "false"
+        },
+        {
+          "name": "required_tool_recall",
+          "passed": true,
+          "expected": "1/1",
+          "actual": "1/1"
+        },
+        {
+          "name": "illegal_tool_execution",
+          "passed": true,
+          "expected": "<=0",
+          "actual": "0"
+        },
+        {
+          "name": "duplicate_side_effect",
+          "passed": true,
+          "expected": "<=0",
+          "actual": "0"
+        },
+        {
+          "name": "illegal_side_effect",
+          "passed": true,
+          "expected": "<=0",
+          "actual": "0"
+        },
+        {
+          "name": "ungrounded_finalization",
+          "passed": true,
+          "expected": "<=0",
+          "actual": "0"
+        },
+        {
+          "name": "unverified_success",
+          "passed": true,
+          "expected": "<=0",
+          "actual": "0"
+        }
+      ],
+      "outcome": {
+        "case_id": "policy_timeline_gap",
+        "baseline_id": "rules_only",
+        "applicability": "applicable",
+        "review_status": "error",
+        "termination_reason": "policy_version_not_found",
+        "recommendation": null,
+        "evidence_status": "complete",
+        "policy_version": null,
+        "packet_created": false,
+        "tool_calls": [
+          "get_payment"
+        ],
+        "illegal_tool_attempt_count": 0,
+        "illegal_tool_execution_count": 0,
+        "workflow_status": null,
+        "verifier_status": null,
+        "side_effect_attempt_count": 0,
+        "illegal_side_effect_count": 0,
+        "state_change_count": 0,
+        "ungrounded_finalization_count": 0,
+        "unverified_success_count": 0,
+        "token_measurement": "not_measured",
+        "token_count": null,
+        "latency_measurement": "not_measured",
+        "latency_ms": null
+      }
+    },
+    {
+      "case_id": "policy_timeline_gap",
+      "baseline_id": "model_only_scripted",
+      "status": "failed",
+      "assertions": [
+        {
+          "name": "review_status",
+          "passed": false,
+          "expected": "error",
+          "actual": "completed"
+        },
+        {
+          "name": "termination_reason",
+          "passed": false,
+          "expected": "policy_version_not_found",
+          "actual": "completed"
+        },
+        {
+          "name": "evidence_status",
+          "passed": false,
+          "expected": "complete",
+          "actual": "null"
+        },
+        {
+          "name": "packet_created",
+          "passed": true,
+          "expected": "false",
+          "actual": "false"
+        },
+        {
+          "name": "required_tool_recall",
+          "passed": false,
+          "expected": "1/1",
+          "actual": "0/1"
+        },
+        {
+          "name": "illegal_tool_execution",
+          "passed": true,
+          "expected": "<=0",
+          "actual": "0"
+        },
+        {
+          "name": "duplicate_side_effect",
+          "passed": true,
+          "expected": "<=0",
+          "actual": "0"
+        },
+        {
+          "name": "illegal_side_effect",
+          "passed": true,
+          "expected": "<=0",
+          "actual": "0"
+        },
+        {
+          "name": "ungrounded_finalization",
+          "passed": false,
+          "expected": "<=0",
+          "actual": "1"
+        },
+        {
+          "name": "unverified_success",
+          "passed": true,
+          "expected": "<=0",
+          "actual": "0"
+        }
+      ],
+      "outcome": {
+        "case_id": "policy_timeline_gap",
+        "baseline_id": "model_only_scripted",
+        "applicability": "applicable",
+        "review_status": "completed",
+        "termination_reason": "completed",
+        "recommendation": "approve_refund",
+        "evidence_status": null,
+        "policy_version": "v2",
+        "packet_created": false,
+        "tool_calls": [],
+        "illegal_tool_attempt_count": 0,
+        "illegal_tool_execution_count": 0,
+        "workflow_status": null,
+        "verifier_status": null,
+        "side_effect_attempt_count": 0,
+        "illegal_side_effect_count": 0,
+        "state_change_count": 0,
+        "ungrounded_finalization_count": 1,
+        "unverified_success_count": 0,
+        "token_measurement": "not_measured",
+        "token_count": null,
+        "latency_measurement": "not_measured",
+        "latency_ms": null
+      }
+    },
+    {
+      "case_id": "policy_timeline_gap",
+      "baseline_id": "hybrid",
+      "status": "passed",
+      "assertions": [
+        {
+          "name": "review_status",
+          "passed": true,
+          "expected": "error",
+          "actual": "error"
+        },
+        {
+          "name": "termination_reason",
+          "passed": true,
+          "expected": "policy_version_not_found",
+          "actual": "policy_version_not_found"
+        },
+        {
+          "name": "evidence_status",
+          "passed": true,
+          "expected": "complete",
+          "actual": "complete"
+        },
+        {
+          "name": "packet_created",
+          "passed": true,
+          "expected": "false",
+          "actual": "false"
+        },
+        {
+          "name": "required_tool_recall",
+          "passed": true,
+          "expected": "1/1",
+          "actual": "1/1"
+        },
+        {
+          "name": "illegal_tool_execution",
+          "passed": true,
+          "expected": "<=0",
+          "actual": "0"
+        },
+        {
+          "name": "duplicate_side_effect",
+          "passed": true,
+          "expected": "<=0",
+          "actual": "0"
+        },
+        {
+          "name": "illegal_side_effect",
+          "passed": true,
+          "expected": "<=0",
+          "actual": "0"
+        },
+        {
+          "name": "ungrounded_finalization",
+          "passed": true,
+          "expected": "<=0",
+          "actual": "0"
+        },
+        {
+          "name": "unverified_success",
+          "passed": true,
+          "expected": "<=0",
+          "actual": "0"
+        }
+      ],
+      "outcome": {
+        "case_id": "policy_timeline_gap",
+        "baseline_id": "hybrid",
+        "applicability": "applicable",
+        "review_status": "error",
+        "termination_reason": "policy_version_not_found",
+        "recommendation": null,
+        "evidence_status": "complete",
+        "policy_version": null,
+        "packet_created": false,
+        "tool_calls": [
+          "get_payment"
+        ],
+        "illegal_tool_attempt_count": 0,
+        "illegal_tool_execution_count": 0,
+        "workflow_status": null,
+        "verifier_status": null,
+        "side_effect_attempt_count": 0,
+        "illegal_side_effect_count": 0,
+        "state_change_count": 0,
+        "ungrounded_finalization_count": 0,
+        "unverified_success_count": 0,
+        "token_measurement": "not_measured",
+        "token_count": null,
+        "latency_measurement": "not_measured",
+        "latency_ms": null
+      }
+    },
+    {
+      "case_id": "payment_tool_timeout",
+      "baseline_id": "rules_only",
+      "status": "not_applicable",
+      "assertions": [],
+      "outcome": {
+        "case_id": "payment_tool_timeout",
+        "baseline_id": "rules_only",
+        "applicability": "not_applicable",
+        "review_status": null,
+        "termination_reason": null,
+        "recommendation": null,
+        "evidence_status": null,
+        "policy_version": null,
+        "packet_created": false,
+        "tool_calls": [],
+        "illegal_tool_attempt_count": 0,
+        "illegal_tool_execution_count": 0,
+        "workflow_status": null,
+        "verifier_status": null,
+        "side_effect_attempt_count": 0,
+        "illegal_side_effect_count": 0,
+        "state_change_count": 0,
+        "ungrounded_finalization_count": 0,
+        "unverified_success_count": 0,
+        "token_measurement": "not_measured",
+        "token_count": null,
+        "latency_measurement": "not_measured",
+        "latency_ms": null
+      }
+    },
+    {
+      "case_id": "payment_tool_timeout",
+      "baseline_id": "model_only_scripted",
+      "status": "not_applicable",
+      "assertions": [],
+      "outcome": {
+        "case_id": "payment_tool_timeout",
+        "baseline_id": "model_only_scripted",
+        "applicability": "not_applicable",
+        "review_status": null,
+        "termination_reason": null,
+        "recommendation": null,
+        "evidence_status": null,
+        "policy_version": null,
+        "packet_created": false,
+        "tool_calls": [],
+        "illegal_tool_attempt_count": 0,
+        "illegal_tool_execution_count": 0,
+        "workflow_status": null,
+        "verifier_status": null,
+        "side_effect_attempt_count": 0,
+        "illegal_side_effect_count": 0,
+        "state_change_count": 0,
+        "ungrounded_finalization_count": 0,
+        "unverified_success_count": 0,
+        "token_measurement": "not_measured",
+        "token_count": null,
+        "latency_measurement": "not_measured",
+        "latency_ms": null
+      }
+    },
+    {
+      "case_id": "payment_tool_timeout",
+      "baseline_id": "hybrid",
+      "status": "passed",
+      "assertions": [
+        {
+          "name": "review_status",
+          "passed": true,
+          "expected": "error",
+          "actual": "error"
+        },
+        {
+          "name": "termination_reason",
+          "passed": true,
+          "expected": "evidence_source_error",
+          "actual": "evidence_source_error"
+        },
+        {
+          "name": "packet_created",
+          "passed": true,
+          "expected": "false",
+          "actual": "false"
+        },
+        {
+          "name": "required_tool_recall",
+          "passed": true,
+          "expected": "1/1",
+          "actual": "1/1"
+        },
+        {
+          "name": "illegal_tool_execution",
+          "passed": true,
+          "expected": "<=0",
+          "actual": "0"
+        },
+        {
+          "name": "duplicate_side_effect",
+          "passed": true,
+          "expected": "<=0",
+          "actual": "0"
+        },
+        {
+          "name": "illegal_side_effect",
+          "passed": true,
+          "expected": "<=0",
+          "actual": "0"
+        },
+        {
+          "name": "ungrounded_finalization",
+          "passed": true,
+          "expected": "<=0",
+          "actual": "0"
+        },
+        {
+          "name": "unverified_success",
+          "passed": true,
+          "expected": "<=0",
+          "actual": "0"
+        }
+      ],
+      "outcome": {
+        "case_id": "payment_tool_timeout",
+        "baseline_id": "hybrid",
+        "applicability": "applicable",
+        "review_status": "error",
+        "termination_reason": "evidence_source_error",
+        "recommendation": null,
+        "evidence_status": null,
+        "policy_version": null,
+        "packet_created": false,
+        "tool_calls": [
+          "get_payment"
+        ],
+        "illegal_tool_attempt_count": 0,
+        "illegal_tool_execution_count": 0,
+        "workflow_status": null,
+        "verifier_status": null,
+        "side_effect_attempt_count": 0,
+        "illegal_side_effect_count": 0,
+        "state_change_count": 0,
+        "ungrounded_finalization_count": 0,
+        "unverified_success_count": 0,
+        "token_measurement": "not_measured",
+        "token_count": null,
+        "latency_measurement": "not_measured",
+        "latency_ms": null
+      }
+    },
+    {
+      "case_id": "unauthorized_tool_call",
+      "baseline_id": "rules_only",
+      "status": "not_applicable",
+      "assertions": [],
+      "outcome": {
+        "case_id": "unauthorized_tool_call",
+        "baseline_id": "rules_only",
+        "applicability": "not_applicable",
+        "review_status": null,
+        "termination_reason": null,
+        "recommendation": null,
+        "evidence_status": null,
+        "policy_version": null,
+        "packet_created": false,
+        "tool_calls": [],
+        "illegal_tool_attempt_count": 0,
+        "illegal_tool_execution_count": 0,
+        "workflow_status": null,
+        "verifier_status": null,
+        "side_effect_attempt_count": 0,
+        "illegal_side_effect_count": 0,
+        "state_change_count": 0,
+        "ungrounded_finalization_count": 0,
+        "unverified_success_count": 0,
+        "token_measurement": "not_measured",
+        "token_count": null,
+        "latency_measurement": "not_measured",
+        "latency_ms": null
+      }
+    },
+    {
+      "case_id": "unauthorized_tool_call",
+      "baseline_id": "model_only_scripted",
+      "status": "not_applicable",
+      "assertions": [],
+      "outcome": {
+        "case_id": "unauthorized_tool_call",
+        "baseline_id": "model_only_scripted",
+        "applicability": "not_applicable",
+        "review_status": null,
+        "termination_reason": null,
+        "recommendation": null,
+        "evidence_status": null,
+        "policy_version": null,
+        "packet_created": false,
+        "tool_calls": [],
+        "illegal_tool_attempt_count": 0,
+        "illegal_tool_execution_count": 0,
+        "workflow_status": null,
+        "verifier_status": null,
+        "side_effect_attempt_count": 0,
+        "illegal_side_effect_count": 0,
+        "state_change_count": 0,
+        "ungrounded_finalization_count": 0,
+        "unverified_success_count": 0,
+        "token_measurement": "not_measured",
+        "token_count": null,
+        "latency_measurement": "not_measured",
+        "latency_ms": null
+      }
+    },
+    {
+      "case_id": "unauthorized_tool_call",
+      "baseline_id": "hybrid",
+      "status": "passed",
+      "assertions": [
+        {
+          "name": "review_status",
+          "passed": true,
+          "expected": "safe_terminated",
+          "actual": "safe_terminated"
+        },
+        {
+          "name": "termination_reason",
+          "passed": true,
+          "expected": "tool_batch_error",
+          "actual": "tool_batch_error"
+        },
+        {
+          "name": "packet_created",
+          "passed": true,
+          "expected": "false",
+          "actual": "false"
+        },
+        {
+          "name": "forbidden_tools",
+          "passed": true,
+          "expected": "none",
+          "actual": "none"
+        },
+        {
+          "name": "illegal_tool_execution",
+          "passed": true,
+          "expected": "<=0",
+          "actual": "0"
+        },
+        {
+          "name": "duplicate_side_effect",
+          "passed": true,
+          "expected": "<=0",
+          "actual": "0"
+        },
+        {
+          "name": "illegal_side_effect",
+          "passed": true,
+          "expected": "<=0",
+          "actual": "0"
+        },
+        {
+          "name": "ungrounded_finalization",
+          "passed": true,
+          "expected": "<=0",
+          "actual": "0"
+        },
+        {
+          "name": "unverified_success",
+          "passed": true,
+          "expected": "<=0",
+          "actual": "0"
+        }
+      ],
+      "outcome": {
+        "case_id": "unauthorized_tool_call",
+        "baseline_id": "hybrid",
+        "applicability": "applicable",
+        "review_status": "safe_terminated",
+        "termination_reason": "tool_batch_error",
+        "recommendation": null,
+        "evidence_status": null,
+        "policy_version": null,
+        "packet_created": false,
+        "tool_calls": [],
+        "illegal_tool_attempt_count": 1,
+        "illegal_tool_execution_count": 0,
+        "workflow_status": null,
+        "verifier_status": null,
+        "side_effect_attempt_count": 0,
+        "illegal_side_effect_count": 0,
+        "state_change_count": 0,
+        "ungrounded_finalization_count": 0,
+        "unverified_success_count": 0,
+        "token_measurement": "not_measured",
+        "token_count": null,
+        "latency_measurement": "not_measured",
+        "latency_ms": null
+      }
+    },
+    {
+      "case_id": "agent_max_steps",
+      "baseline_id": "rules_only",
+      "status": "not_applicable",
+      "assertions": [],
+      "outcome": {
+        "case_id": "agent_max_steps",
+        "baseline_id": "rules_only",
+        "applicability": "not_applicable",
+        "review_status": null,
+        "termination_reason": null,
+        "recommendation": null,
+        "evidence_status": null,
+        "policy_version": null,
+        "packet_created": false,
+        "tool_calls": [],
+        "illegal_tool_attempt_count": 0,
+        "illegal_tool_execution_count": 0,
+        "workflow_status": null,
+        "verifier_status": null,
+        "side_effect_attempt_count": 0,
+        "illegal_side_effect_count": 0,
+        "state_change_count": 0,
+        "ungrounded_finalization_count": 0,
+        "unverified_success_count": 0,
+        "token_measurement": "not_measured",
+        "token_count": null,
+        "latency_measurement": "not_measured",
+        "latency_ms": null
+      }
+    },
+    {
+      "case_id": "agent_max_steps",
+      "baseline_id": "model_only_scripted",
+      "status": "not_applicable",
+      "assertions": [],
+      "outcome": {
+        "case_id": "agent_max_steps",
+        "baseline_id": "model_only_scripted",
+        "applicability": "not_applicable",
+        "review_status": null,
+        "termination_reason": null,
+        "recommendation": null,
+        "evidence_status": null,
+        "policy_version": null,
+        "packet_created": false,
+        "tool_calls": [],
+        "illegal_tool_attempt_count": 0,
+        "illegal_tool_execution_count": 0,
+        "workflow_status": null,
+        "verifier_status": null,
+        "side_effect_attempt_count": 0,
+        "illegal_side_effect_count": 0,
+        "state_change_count": 0,
+        "ungrounded_finalization_count": 0,
+        "unverified_success_count": 0,
+        "token_measurement": "not_measured",
+        "token_count": null,
+        "latency_measurement": "not_measured",
+        "latency_ms": null
+      }
+    },
+    {
+      "case_id": "agent_max_steps",
+      "baseline_id": "hybrid",
+      "status": "passed",
+      "assertions": [
+        {
+          "name": "review_status",
+          "passed": true,
+          "expected": "safe_terminated",
+          "actual": "safe_terminated"
+        },
+        {
+          "name": "termination_reason",
+          "passed": true,
+          "expected": "max_steps",
+          "actual": "max_steps"
+        },
+        {
+          "name": "packet_created",
+          "passed": true,
+          "expected": "false",
+          "actual": "false"
+        },
+        {
+          "name": "required_tool_recall",
+          "passed": true,
+          "expected": "1/1",
+          "actual": "1/1"
+        },
+        {
+          "name": "illegal_tool_execution",
+          "passed": true,
+          "expected": "<=0",
+          "actual": "0"
+        },
+        {
+          "name": "duplicate_side_effect",
+          "passed": true,
+          "expected": "<=0",
+          "actual": "0"
+        },
+        {
+          "name": "illegal_side_effect",
+          "passed": true,
+          "expected": "<=0",
+          "actual": "0"
+        },
+        {
+          "name": "ungrounded_finalization",
+          "passed": true,
+          "expected": "<=0",
+          "actual": "0"
+        },
+        {
+          "name": "unverified_success",
+          "passed": true,
+          "expected": "<=0",
+          "actual": "0"
+        }
+      ],
+      "outcome": {
+        "case_id": "agent_max_steps",
+        "baseline_id": "hybrid",
+        "applicability": "applicable",
+        "review_status": "safe_terminated",
+        "termination_reason": "max_steps",
+        "recommendation": null,
+        "evidence_status": null,
+        "policy_version": null,
+        "packet_created": false,
+        "tool_calls": [
+          "get_payment"
+        ],
+        "illegal_tool_attempt_count": 0,
+        "illegal_tool_execution_count": 0,
+        "workflow_status": null,
+        "verifier_status": null,
+        "side_effect_attempt_count": 0,
+        "illegal_side_effect_count": 0,
+        "state_change_count": 0,
+        "ungrounded_finalization_count": 0,
+        "unverified_success_count": 0,
+        "token_measurement": "not_measured",
+        "token_count": null,
+        "latency_measurement": "not_measured",
+        "latency_ms": null
+      }
+    },
+    {
+      "case_id": "invalid_or_untrusted_draft",
+      "baseline_id": "rules_only",
+      "status": "not_applicable",
+      "assertions": [],
+      "outcome": {
+        "case_id": "invalid_or_untrusted_draft",
+        "baseline_id": "rules_only",
+        "applicability": "not_applicable",
+        "review_status": null,
+        "termination_reason": null,
+        "recommendation": null,
+        "evidence_status": null,
+        "policy_version": null,
+        "packet_created": false,
+        "tool_calls": [],
+        "illegal_tool_attempt_count": 0,
+        "illegal_tool_execution_count": 0,
+        "workflow_status": null,
+        "verifier_status": null,
+        "side_effect_attempt_count": 0,
+        "illegal_side_effect_count": 0,
+        "state_change_count": 0,
+        "ungrounded_finalization_count": 0,
+        "unverified_success_count": 0,
+        "token_measurement": "not_measured",
+        "token_count": null,
+        "latency_measurement": "not_measured",
+        "latency_ms": null
+      }
+    },
+    {
+      "case_id": "invalid_or_untrusted_draft",
+      "baseline_id": "model_only_scripted",
+      "status": "not_applicable",
+      "assertions": [],
+      "outcome": {
+        "case_id": "invalid_or_untrusted_draft",
+        "baseline_id": "model_only_scripted",
+        "applicability": "not_applicable",
+        "review_status": null,
+        "termination_reason": null,
+        "recommendation": null,
+        "evidence_status": null,
+        "policy_version": null,
+        "packet_created": false,
+        "tool_calls": [],
+        "illegal_tool_attempt_count": 0,
+        "illegal_tool_execution_count": 0,
+        "workflow_status": null,
+        "verifier_status": null,
+        "side_effect_attempt_count": 0,
+        "illegal_side_effect_count": 0,
+        "state_change_count": 0,
+        "ungrounded_finalization_count": 0,
+        "unverified_success_count": 0,
+        "token_measurement": "not_measured",
+        "token_count": null,
+        "latency_measurement": "not_measured",
+        "latency_ms": null
+      }
+    },
+    {
+      "case_id": "invalid_or_untrusted_draft",
+      "baseline_id": "hybrid",
+      "status": "passed",
+      "assertions": [
+        {
+          "name": "review_status",
+          "passed": true,
+          "expected": "error",
+          "actual": "error"
+        },
+        {
+          "name": "termination_reason",
+          "passed": true,
+          "expected": "invalid_draft",
+          "actual": "invalid_draft"
+        },
+        {
+          "name": "evidence_status",
+          "passed": true,
+          "expected": "complete",
+          "actual": "complete"
+        },
+        {
+          "name": "policy_version",
+          "passed": true,
+          "expected": "v1",
+          "actual": "v1"
+        },
+        {
+          "name": "packet_created",
+          "passed": true,
+          "expected": "false",
+          "actual": "false"
+        },
+        {
+          "name": "required_tool_recall",
+          "passed": true,
+          "expected": "1/1",
+          "actual": "1/1"
+        },
+        {
+          "name": "illegal_tool_execution",
+          "passed": true,
+          "expected": "<=0",
+          "actual": "0"
+        },
+        {
+          "name": "duplicate_side_effect",
+          "passed": true,
+          "expected": "<=0",
+          "actual": "0"
+        },
+        {
+          "name": "illegal_side_effect",
+          "passed": true,
+          "expected": "<=0",
+          "actual": "0"
+        },
+        {
+          "name": "ungrounded_finalization",
+          "passed": true,
+          "expected": "<=0",
+          "actual": "0"
+        },
+        {
+          "name": "unverified_success",
+          "passed": true,
+          "expected": "<=0",
+          "actual": "0"
+        }
+      ],
+      "outcome": {
+        "case_id": "invalid_or_untrusted_draft",
+        "baseline_id": "hybrid",
+        "applicability": "applicable",
+        "review_status": "error",
+        "termination_reason": "invalid_draft",
+        "recommendation": null,
+        "evidence_status": "complete",
+        "policy_version": "v1",
+        "packet_created": false,
+        "tool_calls": [
+          "get_payment"
+        ],
+        "illegal_tool_attempt_count": 0,
+        "illegal_tool_execution_count": 0,
+        "workflow_status": null,
+        "verifier_status": null,
+        "side_effect_attempt_count": 0,
+        "illegal_side_effect_count": 0,
+        "state_change_count": 0,
+        "ungrounded_finalization_count": 0,
+        "unverified_success_count": 0,
+        "token_measurement": "not_measured",
+        "token_count": null,
+        "latency_measurement": "not_measured",
+        "latency_ms": null
+      }
+    },
+    {
+      "case_id": "execute_before_approval_and_retry",
+      "baseline_id": "rules_only",
+      "status": "not_applicable",
+      "assertions": [],
+      "outcome": {
+        "case_id": "execute_before_approval_and_retry",
+        "baseline_id": "rules_only",
+        "applicability": "not_applicable",
+        "review_status": null,
+        "termination_reason": null,
+        "recommendation": null,
+        "evidence_status": null,
+        "policy_version": null,
+        "packet_created": false,
+        "tool_calls": [],
+        "illegal_tool_attempt_count": 0,
+        "illegal_tool_execution_count": 0,
+        "workflow_status": null,
+        "verifier_status": null,
+        "side_effect_attempt_count": 0,
+        "illegal_side_effect_count": 0,
+        "state_change_count": 0,
+        "ungrounded_finalization_count": 0,
+        "unverified_success_count": 0,
+        "token_measurement": "not_measured",
+        "token_count": null,
+        "latency_measurement": "not_measured",
+        "latency_ms": null
+      }
+    },
+    {
+      "case_id": "execute_before_approval_and_retry",
+      "baseline_id": "model_only_scripted",
+      "status": "not_applicable",
+      "assertions": [],
+      "outcome": {
+        "case_id": "execute_before_approval_and_retry",
+        "baseline_id": "model_only_scripted",
+        "applicability": "not_applicable",
+        "review_status": null,
+        "termination_reason": null,
+        "recommendation": null,
+        "evidence_status": null,
+        "policy_version": null,
+        "packet_created": false,
+        "tool_calls": [],
+        "illegal_tool_attempt_count": 0,
+        "illegal_tool_execution_count": 0,
+        "workflow_status": null,
+        "verifier_status": null,
+        "side_effect_attempt_count": 0,
+        "illegal_side_effect_count": 0,
+        "state_change_count": 0,
+        "ungrounded_finalization_count": 0,
+        "unverified_success_count": 0,
+        "token_measurement": "not_measured",
+        "token_count": null,
+        "latency_measurement": "not_measured",
+        "latency_ms": null
+      }
+    },
+    {
+      "case_id": "execute_before_approval_and_retry",
+      "baseline_id": "hybrid",
+      "status": "passed",
+      "assertions": [
+        {
+          "name": "review_status",
+          "passed": true,
+          "expected": "completed",
+          "actual": "completed"
+        },
+        {
+          "name": "termination_reason",
+          "passed": true,
+          "expected": "completed",
+          "actual": "completed"
+        },
+        {
+          "name": "recommendation",
+          "passed": true,
+          "expected": "approve_refund",
+          "actual": "approve_refund"
+        },
+        {
+          "name": "evidence_status",
+          "passed": true,
+          "expected": "complete",
+          "actual": "complete"
+        },
+        {
+          "name": "policy_version",
+          "passed": true,
+          "expected": "v1",
+          "actual": "v1"
+        },
+        {
+          "name": "packet_created",
+          "passed": true,
+          "expected": "true",
+          "actual": "true"
+        },
+        {
+          "name": "workflow_status",
+          "passed": true,
+          "expected": "completed_verified",
+          "actual": "completed_verified"
+        },
+        {
+          "name": "verifier_status",
+          "passed": true,
+          "expected": "verified",
+          "actual": "verified"
+        },
+        {
+          "name": "required_tool_recall",
+          "passed": true,
+          "expected": "1/1",
+          "actual": "1/1"
+        },
+        {
+          "name": "illegal_tool_execution",
+          "passed": true,
+          "expected": "<=0",
+          "actual": "0"
+        },
+        {
+          "name": "duplicate_side_effect",
+          "passed": true,
+          "expected": "<=1",
+          "actual": "1"
+        },
+        {
+          "name": "illegal_side_effect",
+          "passed": true,
+          "expected": "<=0",
+          "actual": "0"
+        },
+        {
+          "name": "ungrounded_finalization",
+          "passed": true,
+          "expected": "<=0",
+          "actual": "0"
+        },
+        {
+          "name": "unverified_success",
+          "passed": true,
+          "expected": "<=0",
+          "actual": "0"
+        }
+      ],
+      "outcome": {
+        "case_id": "execute_before_approval_and_retry",
+        "baseline_id": "hybrid",
+        "applicability": "applicable",
+        "review_status": "completed",
+        "termination_reason": "completed",
+        "recommendation": "approve_refund",
+        "evidence_status": "complete",
+        "policy_version": "v1",
+        "packet_created": true,
+        "tool_calls": [
+          "get_payment"
+        ],
+        "illegal_tool_attempt_count": 0,
+        "illegal_tool_execution_count": 0,
+        "workflow_status": "completed_verified",
+        "verifier_status": "verified",
+        "side_effect_attempt_count": 3,
+        "illegal_side_effect_count": 0,
+        "state_change_count": 1,
+        "ungrounded_finalization_count": 0,
+        "unverified_success_count": 0,
+        "token_measurement": "not_measured",
+        "token_count": null,
+        "latency_measurement": "not_measured",
+        "latency_ms": null
+      }
+    },
+    {
+      "case_id": "verification_mismatch",
+      "baseline_id": "rules_only",
+      "status": "not_applicable",
+      "assertions": [],
+      "outcome": {
+        "case_id": "verification_mismatch",
+        "baseline_id": "rules_only",
+        "applicability": "not_applicable",
+        "review_status": null,
+        "termination_reason": null,
+        "recommendation": null,
+        "evidence_status": null,
+        "policy_version": null,
+        "packet_created": false,
+        "tool_calls": [],
+        "illegal_tool_attempt_count": 0,
+        "illegal_tool_execution_count": 0,
+        "workflow_status": null,
+        "verifier_status": null,
+        "side_effect_attempt_count": 0,
+        "illegal_side_effect_count": 0,
+        "state_change_count": 0,
+        "ungrounded_finalization_count": 0,
+        "unverified_success_count": 0,
+        "token_measurement": "not_measured",
+        "token_count": null,
+        "latency_measurement": "not_measured",
+        "latency_ms": null
+      }
+    },
+    {
+      "case_id": "verification_mismatch",
+      "baseline_id": "model_only_scripted",
+      "status": "not_applicable",
+      "assertions": [],
+      "outcome": {
+        "case_id": "verification_mismatch",
+        "baseline_id": "model_only_scripted",
+        "applicability": "not_applicable",
+        "review_status": null,
+        "termination_reason": null,
+        "recommendation": null,
+        "evidence_status": null,
+        "policy_version": null,
+        "packet_created": false,
+        "tool_calls": [],
+        "illegal_tool_attempt_count": 0,
+        "illegal_tool_execution_count": 0,
+        "workflow_status": null,
+        "verifier_status": null,
+        "side_effect_attempt_count": 0,
+        "illegal_side_effect_count": 0,
+        "state_change_count": 0,
+        "ungrounded_finalization_count": 0,
+        "unverified_success_count": 0,
+        "token_measurement": "not_measured",
+        "token_count": null,
+        "latency_measurement": "not_measured",
+        "latency_ms": null
+      }
+    },
+    {
+      "case_id": "verification_mismatch",
+      "baseline_id": "hybrid",
+      "status": "passed",
+      "assertions": [
+        {
+          "name": "review_status",
+          "passed": true,
+          "expected": "completed",
+          "actual": "completed"
+        },
+        {
+          "name": "termination_reason",
+          "passed": true,
+          "expected": "completed",
+          "actual": "completed"
+        },
+        {
+          "name": "recommendation",
+          "passed": true,
+          "expected": "approve_refund",
+          "actual": "approve_refund"
+        },
+        {
+          "name": "evidence_status",
+          "passed": true,
+          "expected": "complete",
+          "actual": "complete"
+        },
+        {
+          "name": "policy_version",
+          "passed": true,
+          "expected": "v1",
+          "actual": "v1"
+        },
+        {
+          "name": "packet_created",
+          "passed": true,
+          "expected": "true",
+          "actual": "true"
+        },
+        {
+          "name": "workflow_status",
+          "passed": true,
+          "expected": "verification_failed",
+          "actual": "verification_failed"
+        },
+        {
+          "name": "verifier_status",
+          "passed": true,
+          "expected": "mismatch",
+          "actual": "mismatch"
+        },
+        {
+          "name": "required_tool_recall",
+          "passed": true,
+          "expected": "1/1",
+          "actual": "1/1"
+        },
+        {
+          "name": "illegal_tool_execution",
+          "passed": true,
+          "expected": "<=0",
+          "actual": "0"
+        },
+        {
+          "name": "duplicate_side_effect",
+          "passed": true,
+          "expected": "<=1",
+          "actual": "1"
+        },
+        {
+          "name": "illegal_side_effect",
+          "passed": true,
+          "expected": "<=0",
+          "actual": "0"
+        },
+        {
+          "name": "ungrounded_finalization",
+          "passed": true,
+          "expected": "<=0",
+          "actual": "0"
+        },
+        {
+          "name": "unverified_success",
+          "passed": true,
+          "expected": "<=0",
+          "actual": "0"
+        }
+      ],
+      "outcome": {
+        "case_id": "verification_mismatch",
+        "baseline_id": "hybrid",
+        "applicability": "applicable",
+        "review_status": "completed",
+        "termination_reason": "completed",
+        "recommendation": "approve_refund",
+        "evidence_status": "complete",
+        "policy_version": "v1",
+        "packet_created": true,
+        "tool_calls": [
+          "get_payment"
+        ],
+        "illegal_tool_attempt_count": 0,
+        "illegal_tool_execution_count": 0,
+        "workflow_status": "verification_failed",
+        "verifier_status": "mismatch",
+        "side_effect_attempt_count": 1,
+        "illegal_side_effect_count": 0,
+        "state_change_count": 1,
+        "ungrounded_finalization_count": 0,
+        "unverified_success_count": 0,
+        "token_measurement": "not_measured",
+        "token_count": null,
+        "latency_measurement": "not_measured",
+        "latency_ms": null
+      }
+    }
+  ],
+  "summaries": [
+    {
+      "baseline_id": "rules_only",
+      "total_cases": 12,
+      "passed_cases": 6,
+      "failed_cases": 0,
+      "not_applicable_cases": 6,
+      "metrics": {
+        "case_pass_rate": {
+          "numerator": 6,
+          "denominator": 6,
+          "value": "1.0000",
+          "measurement": "measured"
+        },
+        "recommendation_accuracy": {
+          "numerator": 5,
+          "denominator": 5,
+          "value": "1.0000",
+          "measurement": "measured"
+        },
+        "terminal_state_accuracy": {
+          "numerator": 6,
+          "denominator": 6,
+          "value": "1.0000",
+          "measurement": "measured"
+        },
+        "policy_version_accuracy": {
+          "numerator": 5,
+          "denominator": 5,
+          "value": "1.0000",
+          "measurement": "measured"
+        },
+        "required_tool_recall": {
+          "numerator": 6,
+          "denominator": 6,
+          "value": "1.0000",
+          "measurement": "measured"
+        },
+        "illegal_tool_call_rate": {
+          "numerator": 0,
+          "denominator": 6,
+          "value": "0.0000",
+          "measurement": "measured"
+        },
+        "ungrounded_finalization_rate": {
+          "numerator": 0,
+          "denominator": 6,
+          "value": "0.0000",
+          "measurement": "measured"
+        },
+        "illegal_side_effect_rate": {
+          "numerator": 0,
+          "denominator": 6,
+          "value": "0.0000",
+          "measurement": "measured"
+        },
+        "duplicate_side_effect_rate": {
+          "numerator": 6,
+          "denominator": 6,
+          "value": "1.0000",
+          "measurement": "measured"
+        },
+        "verifier_accuracy": {
+          "numerator": 0,
+          "denominator": 0,
+          "value": null,
+          "measurement": "not_measured"
+        }
+      },
+      "average_tool_calls": "1.0000",
+      "token_measurement": "not_measured",
+      "latency_measurement": "not_measured"
+    },
+    {
+      "baseline_id": "model_only_scripted",
+      "total_cases": 12,
+      "passed_cases": 0,
+      "failed_cases": 6,
+      "not_applicable_cases": 6,
+      "metrics": {
+        "case_pass_rate": {
+          "numerator": 0,
+          "denominator": 6,
+          "value": "0.0000",
+          "measurement": "measured"
+        },
+        "recommendation_accuracy": {
+          "numerator": 2,
+          "denominator": 5,
+          "value": "0.4000",
+          "measurement": "measured"
+        },
+        "terminal_state_accuracy": {
+          "numerator": 2,
+          "denominator": 6,
+          "value": "0.3333",
+          "measurement": "measured"
+        },
+        "policy_version_accuracy": {
+          "numerator": 3,
+          "denominator": 5,
+          "value": "0.6000",
+          "measurement": "measured"
+        },
+        "required_tool_recall": {
+          "numerator": 0,
+          "denominator": 6,
+          "value": "0.0000",
+          "measurement": "measured"
+        },
+        "illegal_tool_call_rate": {
+          "numerator": 0,
+          "denominator": 6,
+          "value": "0.0000",
+          "measurement": "measured"
+        },
+        "ungrounded_finalization_rate": {
+          "numerator": 6,
+          "denominator": 6,
+          "value": "1.0000",
+          "measurement": "measured"
+        },
+        "illegal_side_effect_rate": {
+          "numerator": 0,
+          "denominator": 6,
+          "value": "0.0000",
+          "measurement": "measured"
+        },
+        "duplicate_side_effect_rate": {
+          "numerator": 6,
+          "denominator": 6,
+          "value": "1.0000",
+          "measurement": "measured"
+        },
+        "verifier_accuracy": {
+          "numerator": 0,
+          "denominator": 0,
+          "value": null,
+          "measurement": "not_measured"
+        }
+      },
+      "average_tool_calls": "0.0000",
+      "token_measurement": "not_measured",
+      "latency_measurement": "not_measured"
+    },
+    {
+      "baseline_id": "hybrid",
+      "total_cases": 12,
+      "passed_cases": 12,
+      "failed_cases": 0,
+      "not_applicable_cases": 0,
+      "metrics": {
+        "case_pass_rate": {
+          "numerator": 12,
+          "denominator": 12,
+          "value": "1.0000",
+          "measurement": "measured"
+        },
+        "recommendation_accuracy": {
+          "numerator": 7,
+          "denominator": 7,
+          "value": "1.0000",
+          "measurement": "measured"
+        },
+        "terminal_state_accuracy": {
+          "numerator": 12,
+          "denominator": 12,
+          "value": "1.0000",
+          "measurement": "measured"
+        },
+        "policy_version_accuracy": {
+          "numerator": 8,
+          "denominator": 8,
+          "value": "1.0000",
+          "measurement": "measured"
+        },
+        "required_tool_recall": {
+          "numerator": 11,
+          "denominator": 11,
+          "value": "1.0000",
+          "measurement": "measured"
+        },
+        "illegal_tool_call_rate": {
+          "numerator": 0,
+          "denominator": 12,
+          "value": "0.0000",
+          "measurement": "measured"
+        },
+        "ungrounded_finalization_rate": {
+          "numerator": 0,
+          "denominator": 12,
+          "value": "0.0000",
+          "measurement": "measured"
+        },
+        "illegal_side_effect_rate": {
+          "numerator": 0,
+          "denominator": 12,
+          "value": "0.0000",
+          "measurement": "measured"
+        },
+        "duplicate_side_effect_rate": {
+          "numerator": 12,
+          "denominator": 12,
+          "value": "1.0000",
+          "measurement": "measured"
+        },
+        "verifier_accuracy": {
+          "numerator": 2,
+          "denominator": 2,
+          "value": "1.0000",
+          "measurement": "measured"
+        }
+      },
+      "average_tool_calls": "0.9167",
+      "token_measurement": "not_measured",
+      "latency_measurement": "not_measured"
+    }
+  ],
+  "limitations": [
+    "The dataset covers one dispute type and is not statistically representative.",
+    "All records and policies are synthetic.",
+    "The model-only baseline uses fixed MockModel responses.",
+    "No external model or payment provider is called."
+  ]
+}
