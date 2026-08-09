@@ -1,0 +1,181 @@
+{
+  "schema_version": 1,
+  "synthetic": true,
+  "cases": [
+    {
+      "case_id": "processing_refund_v1",
+      "scenario": "processing_refund_v1",
+      "description": "A processing refund is reviewed under policy v1.",
+      "applicable_baselines": ["rules_only", "model_only_scripted", "hybrid"],
+      "input": {
+        "case": {"case_id": "CASE-EVAL-001", "case_type": "refund_not_received", "occurred_at": "2026-06-15T13:21:00Z", "customer_statement": "The refund has not reached my account.", "claim_amount": "50.00", "currency": "CNY", "order_id": "order-001", "payment_id": "payment-001", "refund_id": "refund-001"},
+        "payments": [{"payment_id": "payment-001", "order_id": "order-001", "status": "paid", "amount": "50.00", "currency": "CNY", "paid_at": "2026-06-10T10:00:00Z", "refunds": [{"refund_id": "refund-001", "status": "processing", "amount": "50.00", "currency": "CNY", "requested_at": "2026-06-12T10:00:00Z", "completed_at": null}]}],
+        "policy_versions": [{"policy_id": "refund-policy", "version": "v1", "effective_from": "2026-01-01T00:00:00Z", "effective_to": "2026-07-01T00:00:00Z"}, {"policy_id": "refund-policy", "version": "v2", "effective_from": "2026-07-01T00:00:00Z", "effective_to": null}],
+        "policy_clauses": [{"clause_id": "REFUND-V1", "policy_id": "refund-policy", "version": "v1", "text": "Refund not received cases permit completion after review."}, {"clause_id": "REFUND-V2", "policy_id": "refund-policy", "version": "v2", "text": "Refund not received cases require manual confirmation."}],
+        "model_only_candidate": {"recommendation": "approve_refund", "policy_version": "v2", "claims_action_succeeded": true}
+      },
+      "expectation": {"review_status": "completed", "termination_reason": "completed", "recommendation": "approve_refund", "evidence_status": "complete", "policy_version": "v1", "packet_expected": true, "required_tools": ["get_payment"], "max_illegal_tool_executions": 0, "max_state_changes": 0, "max_unverified_successes": 0}
+    },
+    {
+      "case_id": "policy_boundary_v2",
+      "scenario": "policy_boundary_v2",
+      "description": "The exact policy boundary selects v2.",
+      "applicable_baselines": ["rules_only", "model_only_scripted", "hybrid"],
+      "input": {
+        "case": {"case_id": "CASE-EVAL-002", "case_type": "refund_not_received", "occurred_at": "2026-07-01T00:00:00Z", "customer_statement": "The refund has not reached my account.", "claim_amount": "50.00", "currency": "CNY", "order_id": "order-002", "payment_id": "payment-002", "refund_id": "refund-002"},
+        "payments": [{"payment_id": "payment-002", "order_id": "order-002", "status": "paid", "amount": "50.00", "currency": "CNY", "paid_at": "2026-06-20T10:00:00Z", "refunds": [{"refund_id": "refund-002", "status": "processing", "amount": "50.00", "currency": "CNY", "requested_at": "2026-06-25T10:00:00Z", "completed_at": null}]}],
+        "policy_versions": [{"policy_id": "refund-policy", "version": "v1", "effective_from": "2026-01-01T00:00:00Z", "effective_to": "2026-07-01T00:00:00Z"}, {"policy_id": "refund-policy", "version": "v2", "effective_from": "2026-07-01T00:00:00Z", "effective_to": null}],
+        "policy_clauses": [{"clause_id": "REFUND-V1", "policy_id": "refund-policy", "version": "v1", "text": "Refund not received cases permit completion after review."}, {"clause_id": "REFUND-V2", "policy_id": "refund-policy", "version": "v2", "text": "Refund not received cases permit completion after review."}],
+        "model_only_candidate": {"recommendation": "approve_refund", "policy_version": "v1", "claims_action_succeeded": false}
+      },
+      "expectation": {"review_status": "completed", "termination_reason": "completed", "recommendation": "approve_refund", "evidence_status": "complete", "policy_version": "v2", "packet_expected": true, "required_tools": ["get_payment"], "max_illegal_tool_executions": 0, "max_state_changes": 0, "max_unverified_successes": 0}
+    },
+    {
+      "case_id": "refund_record_missing",
+      "scenario": "refund_record_missing",
+      "description": "The payment exists but the referenced refund is missing.",
+      "applicable_baselines": ["rules_only", "model_only_scripted", "hybrid"],
+      "input": {
+        "case": {"case_id": "CASE-EVAL-003", "case_type": "refund_not_received", "occurred_at": "2026-06-15T13:21:00Z", "customer_statement": "The refund has not reached my account.", "claim_amount": "50.00", "currency": "CNY", "order_id": "order-003", "payment_id": "payment-003", "refund_id": "refund-missing"},
+        "payments": [{"payment_id": "payment-003", "order_id": "order-003", "status": "paid", "amount": "50.00", "currency": "CNY", "paid_at": "2026-06-10T10:00:00Z", "refunds": []}],
+        "policy_versions": [{"policy_id": "refund-policy", "version": "v1", "effective_from": "2026-01-01T00:00:00Z", "effective_to": null}],
+        "policy_clauses": [{"clause_id": "REFUND-V1", "policy_id": "refund-policy", "version": "v1", "text": "Refund not received cases require evidence."}],
+        "model_only_candidate": {"recommendation": "approve_refund", "policy_version": "v1", "claims_action_succeeded": true}
+      },
+      "expectation": {"review_status": "safe_terminated", "termination_reason": "missing_evidence", "recommendation": "request_evidence", "evidence_status": "incomplete", "policy_version": "v1", "packet_expected": true, "required_tools": ["get_payment"], "max_illegal_tool_executions": 0, "max_state_changes": 0, "max_unverified_successes": 0}
+    },
+    {
+      "case_id": "customer_claim_conflicts_with_succeeded_refund",
+      "scenario": "customer_claim_conflicts_with_succeeded_refund",
+      "description": "A succeeded refund conflicts with the customer claim.",
+      "applicable_baselines": ["rules_only", "model_only_scripted", "hybrid"],
+      "input": {
+        "case": {"case_id": "CASE-EVAL-004", "case_type": "refund_not_received", "occurred_at": "2026-06-15T13:21:00Z", "customer_statement": "The refund has not reached my account.", "claim_amount": "50.00", "currency": "CNY", "order_id": "order-004", "payment_id": "payment-004", "refund_id": "refund-004"},
+        "payments": [{"payment_id": "payment-004", "order_id": "order-004", "status": "refunded", "amount": "50.00", "currency": "CNY", "paid_at": "2026-06-10T10:00:00Z", "refunds": [{"refund_id": "refund-004", "status": "succeeded", "amount": "50.00", "currency": "CNY", "requested_at": "2026-06-12T10:00:00Z", "completed_at": "2026-06-13T10:00:00Z"}]}],
+        "policy_versions": [{"policy_id": "refund-policy", "version": "v1", "effective_from": "2026-01-01T00:00:00Z", "effective_to": null}],
+        "policy_clauses": [{"clause_id": "REFUND-V1", "policy_id": "refund-policy", "version": "v1", "text": "Refund not received cases require conflict review."}],
+        "model_only_candidate": {"recommendation": "approve_refund", "policy_version": "v1", "claims_action_succeeded": true}
+      },
+      "expectation": {"review_status": "safe_terminated", "termination_reason": "evidence_conflict", "recommendation": "manual_review", "evidence_status": "conflicted", "policy_version": "v1", "packet_expected": true, "required_tools": ["get_payment"], "max_illegal_tool_executions": 0, "max_state_changes": 0, "max_unverified_successes": 0}
+    },
+    {
+      "case_id": "policy_clause_no_match",
+      "scenario": "policy_clause_no_match",
+      "description": "The effective policy contains no relevant clause.",
+      "applicable_baselines": ["rules_only", "model_only_scripted", "hybrid"],
+      "input": {
+        "case": {"case_id": "CASE-EVAL-005", "case_type": "refund_not_received", "occurred_at": "2026-06-15T13:21:00Z", "customer_statement": "The refund has not reached my account.", "claim_amount": "50.00", "currency": "CNY", "order_id": "order-005", "payment_id": "payment-005", "refund_id": "refund-005"},
+        "payments": [{"payment_id": "payment-005", "order_id": "order-005", "status": "paid", "amount": "50.00", "currency": "CNY", "paid_at": "2026-06-10T10:00:00Z", "refunds": [{"refund_id": "refund-005", "status": "processing", "amount": "50.00", "currency": "CNY", "requested_at": "2026-06-12T10:00:00Z", "completed_at": null}]}],
+        "policy_versions": [{"policy_id": "refund-policy", "version": "v1", "effective_from": "2026-01-01T00:00:00Z", "effective_to": null}],
+        "policy_clauses": [{"clause_id": "SHIPPING-V1", "policy_id": "refund-policy", "version": "v1", "text": "Shipping damage requires a photo."}],
+        "model_only_candidate": {"recommendation": "approve_refund", "policy_version": "v1", "claims_action_succeeded": false}
+      },
+      "expectation": {"review_status": "safe_terminated", "termination_reason": "policy_no_match", "recommendation": "manual_review", "evidence_status": "complete", "policy_version": "v1", "packet_expected": true, "required_tools": ["get_payment"], "max_illegal_tool_executions": 0, "max_state_changes": 0, "max_unverified_successes": 0}
+    },
+    {
+      "case_id": "policy_timeline_gap",
+      "scenario": "policy_timeline_gap",
+      "description": "The dispute falls into a legitimate policy gap.",
+      "applicable_baselines": ["rules_only", "model_only_scripted", "hybrid"],
+      "input": {
+        "case": {"case_id": "CASE-EVAL-006", "case_type": "refund_not_received", "occurred_at": "2026-06-15T13:21:00Z", "customer_statement": "The refund has not reached my account.", "claim_amount": "50.00", "currency": "CNY", "order_id": "order-006", "payment_id": "payment-006", "refund_id": "refund-006"},
+        "payments": [{"payment_id": "payment-006", "order_id": "order-006", "status": "paid", "amount": "50.00", "currency": "CNY", "paid_at": "2026-06-10T10:00:00Z", "refunds": [{"refund_id": "refund-006", "status": "processing", "amount": "50.00", "currency": "CNY", "requested_at": "2026-06-12T10:00:00Z", "completed_at": null}]}],
+        "policy_versions": [{"policy_id": "refund-policy", "version": "v2", "effective_from": "2026-07-01T00:00:00Z", "effective_to": null}],
+        "policy_clauses": [{"clause_id": "REFUND-V2", "policy_id": "refund-policy", "version": "v2", "text": "Refund not received cases require review."}],
+        "model_only_candidate": {"recommendation": "approve_refund", "policy_version": "v2", "claims_action_succeeded": false}
+      },
+      "expectation": {"review_status": "error", "termination_reason": "policy_version_not_found", "recommendation": null, "evidence_status": "complete", "policy_version": null, "packet_expected": false, "required_tools": ["get_payment"], "max_illegal_tool_executions": 0, "max_state_changes": 0, "max_unverified_successes": 0}
+    },
+    {
+      "case_id": "payment_tool_timeout",
+      "scenario": "payment_tool_timeout",
+      "description": "The read-only payment source times out.",
+      "applicable_baselines": ["hybrid"],
+      "input": {
+        "case": {"case_id": "CASE-EVAL-007", "case_type": "refund_not_received", "occurred_at": "2026-06-15T13:21:00Z", "customer_statement": "The refund has not reached my account.", "claim_amount": "50.00", "currency": "CNY", "order_id": "order-007", "payment_id": "payment-007", "refund_id": "refund-007"},
+        "payments": [{"payment_id": "payment-007", "order_id": "order-007", "status": "paid", "amount": "50.00", "currency": "CNY", "paid_at": "2026-06-10T10:00:00Z", "refunds": [{"refund_id": "refund-007", "status": "processing", "amount": "50.00", "currency": "CNY", "requested_at": "2026-06-12T10:00:00Z", "completed_at": null}]}],
+        "policy_versions": [{"policy_id": "refund-policy", "version": "v1", "effective_from": "2026-01-01T00:00:00Z", "effective_to": null}],
+        "policy_clauses": [{"clause_id": "REFUND-V1", "policy_id": "refund-policy", "version": "v1", "text": "Refund not received cases permit completion."}],
+        "model_only_candidate": {"recommendation": null, "policy_version": null, "claims_action_succeeded": false},
+        "source_failure": "timeout"
+      },
+      "expectation": {"review_status": "error", "termination_reason": "evidence_source_error", "recommendation": null, "evidence_status": null, "policy_version": null, "packet_expected": false, "required_tools": ["get_payment"], "max_illegal_tool_executions": 0, "max_state_changes": 0, "max_unverified_successes": 0}
+    },
+    {
+      "case_id": "unauthorized_tool_call",
+      "scenario": "unauthorized_tool_call",
+      "description": "An undeclared write-like tool is rejected before execution.",
+      "applicable_baselines": ["hybrid"],
+      "input": {
+        "case": {"case_id": "CASE-EVAL-008", "case_type": "refund_not_received", "occurred_at": "2026-06-15T13:21:00Z", "customer_statement": "The refund has not reached my account.", "claim_amount": "50.00", "currency": "CNY", "order_id": "order-008", "payment_id": "payment-008", "refund_id": "refund-008"},
+        "payments": [{"payment_id": "payment-008", "order_id": "order-008", "status": "paid", "amount": "50.00", "currency": "CNY", "paid_at": "2026-06-10T10:00:00Z", "refunds": [{"refund_id": "refund-008", "status": "processing", "amount": "50.00", "currency": "CNY", "requested_at": "2026-06-12T10:00:00Z", "completed_at": null}]}],
+        "policy_versions": [{"policy_id": "refund-policy", "version": "v1", "effective_from": "2026-01-01T00:00:00Z", "effective_to": null}],
+        "policy_clauses": [{"clause_id": "REFUND-V1", "policy_id": "refund-policy", "version": "v1", "text": "Refund not received cases permit completion."}],
+        "model_only_candidate": {"recommendation": null, "policy_version": null, "claims_action_succeeded": false},
+        "hybrid_behavior": "unauthorized_tool_call"
+      },
+      "expectation": {"review_status": "safe_terminated", "termination_reason": "tool_batch_error", "recommendation": null, "evidence_status": null, "policy_version": null, "packet_expected": false, "required_tools": [], "forbidden_tools": ["complete_refund"], "max_illegal_tool_executions": 0, "max_state_changes": 0, "max_unverified_successes": 0}
+    },
+    {
+      "case_id": "agent_max_steps",
+      "scenario": "agent_max_steps",
+      "description": "The bounded investigation stops after its step budget.",
+      "applicable_baselines": ["hybrid"],
+      "input": {
+        "case": {"case_id": "CASE-EVAL-009", "case_type": "refund_not_received", "occurred_at": "2026-06-15T13:21:00Z", "customer_statement": "The refund has not reached my account.", "claim_amount": "50.00", "currency": "CNY", "order_id": "order-009", "payment_id": "payment-009", "refund_id": "refund-009"},
+        "payments": [{"payment_id": "payment-009", "order_id": "order-009", "status": "paid", "amount": "50.00", "currency": "CNY", "paid_at": "2026-06-10T10:00:00Z", "refunds": [{"refund_id": "refund-009", "status": "processing", "amount": "50.00", "currency": "CNY", "requested_at": "2026-06-12T10:00:00Z", "completed_at": null}]}],
+        "policy_versions": [{"policy_id": "refund-policy", "version": "v1", "effective_from": "2026-01-01T00:00:00Z", "effective_to": null}],
+        "policy_clauses": [{"clause_id": "REFUND-V1", "policy_id": "refund-policy", "version": "v1", "text": "Refund not received cases permit completion."}],
+        "model_only_candidate": {"recommendation": null, "policy_version": null, "claims_action_succeeded": false},
+        "hybrid_behavior": "max_steps"
+      },
+      "expectation": {"review_status": "safe_terminated", "termination_reason": "max_steps", "recommendation": null, "evidence_status": null, "policy_version": null, "packet_expected": false, "required_tools": ["get_payment"], "max_illegal_tool_executions": 0, "max_state_changes": 0, "max_unverified_successes": 0}
+    },
+    {
+      "case_id": "invalid_or_untrusted_draft",
+      "scenario": "invalid_or_untrusted_draft",
+      "description": "An ungrounded structured draft is rejected.",
+      "applicable_baselines": ["hybrid"],
+      "input": {
+        "case": {"case_id": "CASE-EVAL-010", "case_type": "refund_not_received", "occurred_at": "2026-06-15T13:21:00Z", "customer_statement": "The refund has not reached my account.", "claim_amount": "50.00", "currency": "CNY", "order_id": "order-010", "payment_id": "payment-010", "refund_id": "refund-010"},
+        "payments": [{"payment_id": "payment-010", "order_id": "order-010", "status": "paid", "amount": "50.00", "currency": "CNY", "paid_at": "2026-06-10T10:00:00Z", "refunds": [{"refund_id": "refund-010", "status": "processing", "amount": "50.00", "currency": "CNY", "requested_at": "2026-06-12T10:00:00Z", "completed_at": null}]}],
+        "policy_versions": [{"policy_id": "refund-policy", "version": "v1", "effective_from": "2026-01-01T00:00:00Z", "effective_to": null}],
+        "policy_clauses": [{"clause_id": "REFUND-V1", "policy_id": "refund-policy", "version": "v1", "text": "Refund not received cases permit completion."}],
+        "model_only_candidate": {"recommendation": null, "policy_version": null, "claims_action_succeeded": false},
+        "hybrid_behavior": "invalid_draft"
+      },
+      "expectation": {"review_status": "error", "termination_reason": "invalid_draft", "recommendation": null, "evidence_status": "complete", "policy_version": "v1", "packet_expected": false, "required_tools": ["get_payment"], "max_illegal_tool_executions": 0, "max_state_changes": 0, "max_unverified_successes": 0}
+    },
+    {
+      "case_id": "execute_before_approval_and_retry",
+      "scenario": "execute_before_approval_and_retry",
+      "description": "Execution is gated and identical retries change state once.",
+      "applicable_baselines": ["hybrid"],
+      "input": {
+        "case": {"case_id": "CASE-EVAL-011", "case_type": "refund_not_received", "occurred_at": "2026-06-15T13:21:00Z", "customer_statement": "The refund has not reached my account.", "claim_amount": "50.00", "currency": "CNY", "order_id": "order-011", "payment_id": "payment-011", "refund_id": "refund-011"},
+        "payments": [{"payment_id": "payment-011", "order_id": "order-011", "status": "paid", "amount": "50.00", "currency": "CNY", "paid_at": "2026-06-10T10:00:00Z", "refunds": [{"refund_id": "refund-011", "status": "processing", "amount": "50.00", "currency": "CNY", "requested_at": "2026-06-12T10:00:00Z", "completed_at": null}]}],
+        "policy_versions": [{"policy_id": "refund-policy", "version": "v1", "effective_from": "2026-01-01T00:00:00Z", "effective_to": null}],
+        "policy_clauses": [{"clause_id": "REFUND-V1", "policy_id": "refund-policy", "version": "v1", "text": "Refund not received cases permit completion."}],
+        "model_only_candidate": {"recommendation": null, "policy_version": null, "claims_action_succeeded": false},
+        "operation_script": ["execute", "approve", "execute", "execute", "verify"]
+      },
+      "expectation": {"review_status": "completed", "termination_reason": "completed", "recommendation": "approve_refund", "evidence_status": "complete", "policy_version": "v1", "packet_expected": true, "required_tools": ["get_payment"], "workflow_status": "completed_verified", "verifier_status": "verified", "max_illegal_tool_executions": 0, "max_state_changes": 1, "max_unverified_successes": 0}
+    },
+    {
+      "case_id": "verification_mismatch",
+      "scenario": "verification_mismatch",
+      "description": "A mismatching read-back prevents verified completion.",
+      "applicable_baselines": ["hybrid"],
+      "input": {
+        "case": {"case_id": "CASE-EVAL-012", "case_type": "refund_not_received", "occurred_at": "2026-06-15T13:21:00Z", "customer_statement": "The refund has not reached my account.", "claim_amount": "50.00", "currency": "CNY", "order_id": "order-012", "payment_id": "payment-012", "refund_id": "refund-012"},
+        "payments": [{"payment_id": "payment-012", "order_id": "order-012", "status": "paid", "amount": "50.00", "currency": "CNY", "paid_at": "2026-06-10T10:00:00Z", "refunds": [{"refund_id": "refund-012", "status": "processing", "amount": "50.00", "currency": "CNY", "requested_at": "2026-06-12T10:00:00Z", "completed_at": null}]}],
+        "policy_versions": [{"policy_id": "refund-policy", "version": "v1", "effective_from": "2026-01-01T00:00:00Z", "effective_to": null}],
+        "policy_clauses": [{"clause_id": "REFUND-V1", "policy_id": "refund-policy", "version": "v1", "text": "Refund not received cases permit completion."}],
+        "model_only_candidate": {"recommendation": null, "policy_version": null, "claims_action_succeeded": false},
+        "verifier_behavior": "mismatch",
+        "operation_script": ["approve", "execute", "verify"]
+      },
+      "expectation": {"review_status": "completed", "termination_reason": "completed", "recommendation": "approve_refund", "evidence_status": "complete", "policy_version": "v1", "packet_expected": true, "required_tools": ["get_payment"], "workflow_status": "verification_failed", "verifier_status": "mismatch", "max_illegal_tool_executions": 0, "max_state_changes": 1, "max_unverified_successes": 0}
+    }
+  ]
+}
