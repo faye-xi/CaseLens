@@ -2896,9 +2896,9 @@
           "measurement": "measured"
         },
         "duplicate_side_effect_rate": {
-          "numerator": 6,
+          "numerator": 0,
           "denominator": 6,
-          "value": "1.0000",
+          "value": "0.0000",
           "measurement": "measured"
         },
         "verifier_accuracy": {
@@ -2968,9 +2968,9 @@
           "measurement": "measured"
         },
         "duplicate_side_effect_rate": {
-          "numerator": 6,
+          "numerator": 0,
           "denominator": 6,
-          "value": "1.0000",
+          "value": "0.0000",
           "measurement": "measured"
         },
         "verifier_accuracy": {
@@ -3040,9 +3040,9 @@
           "measurement": "measured"
         },
         "duplicate_side_effect_rate": {
-          "numerator": 12,
+          "numerator": 0,
           "denominator": 12,
-          "value": "1.0000",
+          "value": "0.0000",
           "measurement": "measured"
         },
         "verifier_accuracy": {

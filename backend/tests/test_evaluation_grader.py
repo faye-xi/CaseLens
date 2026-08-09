@@ -118,5 +118,22 @@ def test_summarizes_counts_rates_and_zero_denominators() -> None:
     assert summary.metrics["case_pass_rate"].numerator == 1
     assert summary.metrics["case_pass_rate"].denominator == 2
     assert summary.metrics["case_pass_rate"].value == Decimal("0.5000")
+    assert summary.metrics["duplicate_side_effect_rate"].numerator == 0
+    assert summary.metrics["duplicate_side_effect_rate"].denominator == 2
+    assert summary.metrics["duplicate_side_effect_rate"].value == Decimal("0.0000")
     assert summary.metrics["verifier_accuracy"].denominator == 0
     assert summary.metrics["verifier_accuracy"].value is None
+
+
+def test_duplicate_side_effect_rate_counts_failed_safety_assertions() -> None:
+    safe = grade_case(valid_golden_case(), matching_outcome())
+    duplicate = grade_case(
+        valid_golden_case(),
+        matching_outcome().model_copy(update={"state_change_count": 1}),
+    )
+
+    summary = summarize_grades(BaselineId.HYBRID, (safe, duplicate))
+
+    assert summary.metrics["duplicate_side_effect_rate"].numerator == 1
+    assert summary.metrics["duplicate_side_effect_rate"].denominator == 2
+    assert summary.metrics["duplicate_side_effect_rate"].value == Decimal("0.5000")

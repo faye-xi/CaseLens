@@ -197,7 +197,7 @@ def summarize_grades(
             applicable, "ungrounded_finalization_count"
         ),
         "illegal_side_effect_rate": _zero_rate(applicable, "illegal_side_effect_count"),
-        "duplicate_side_effect_rate": _assertion_rate(
+        "duplicate_side_effect_rate": _assertion_failure_rate(
             applicable, "duplicate_side_effect"
         ),
         "verifier_accuracy": _assertion_rate(applicable, "verifier_status"),
@@ -274,6 +274,19 @@ def _assertion_rate(
         if assertion.name == assertion_name
     )
     return _rate(sum(assertion.passed for assertion in assertions), len(assertions))
+
+
+def _assertion_failure_rate(
+    grades: tuple[CaseGrade, ...],
+    assertion_name: str,
+) -> RateMetric:
+    assertions = tuple(
+        assertion
+        for grade in grades
+        for assertion in grade.assertions
+        if assertion.name == assertion_name
+    )
+    return _rate(sum(not assertion.passed for assertion in assertions), len(assertions))
 
 
 def _zero_rate(
