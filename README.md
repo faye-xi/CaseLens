@@ -29,6 +29,45 @@ CaseLens 是一个可审计的电商争议复核 Agent 与政策回归实验台�
 - **Verify and replay:** completion depends on an independent read-back of the
   stored business state, while durable model/tool traces support audit replay.
 
+## Product walkthrough
+
+The screenshots below show one complete run over synthetic data. The workflow
+starts from an unreviewed dispute, gathers evidence and the time-correct policy
+clause, pauses for a named human reviewer, executes an idempotent simulated
+refund action, verifies the stored result, and preserves an auditable trace.
+
+### 1. Load the dispute
+
+The workspace starts with a synthetic refund-not-received case and no decision
+or side effect.
+
+![Initial CaseLens case dossier before review.](docs/assets/demo/01-case-dossier.png)
+
+### 2. Investigate and request approval
+
+The agent returns trusted evidence and an exact policy citation. Because the
+recommendation is high risk, the backend stops at `waiting_approval`.
+
+![Evidence, policy citation, DecisionPacket, and human approval gate.](docs/assets/demo/02-evidence-policy-approval.png)
+
+### 3. Approve, execute, and verify
+
+A named reviewer approves the packet before the simulated refund action becomes
+available. After execution, a separate read-back verifier determines whether
+the workflow may reach `completed_verified`.
+
+![Named reviewer approval before the simulated action.](docs/assets/demo/03-approved-ready-to-execute.png)
+
+![Executed action waiting for independent verification.](docs/assets/demo/04-ready-to-verify.png)
+
+![Workflow completed only after successful state verification.](docs/assets/demo/05-completed-verified.png)
+
+### 4. Replay the audit trail
+
+The trace drawer exposes the ordered model and tool activity stored for replay.
+
+![Auditable execution trace with ordered model and tool records.](docs/assets/demo/06-auditable-trace.png)
+
 ## How it works
 
 ```mermaid
