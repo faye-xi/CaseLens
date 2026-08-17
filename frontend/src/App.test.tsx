@@ -1,3 +1,5 @@
+import { readFileSync } from 'node:fs'
+
 import { fireEvent, render, screen } from '@testing-library/react'
 import { describe, expect, it, vi } from 'vitest'
 
@@ -29,5 +31,13 @@ describe('CaseLens review workspace', () => {
     expect(screen.getAllByText('CASE-DEMO-001')).not.toHaveLength(0)
     fireEvent.click(screen.getByRole('button', { name: 'Start review' }))
     expect(startReview).toHaveBeenCalledOnce()
+  })
+
+  it('keeps policy citation text readable against its pale background', () => {
+    const stylesSource = readFileSync('src/styles.css', 'utf8')
+    const rule = stylesSource.match(/\.policy-citation\s*{([^}]*)}/)?.[1] ?? ''
+
+    expect(rule).toContain('color: #152238')
+    expect(rule).toContain('background: #f1faf9')
   })
 })

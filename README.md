@@ -1,16 +1,90 @@
 # CaseLens
 
-> **V0.1 — Day 15 deliverable complete**
+> **V0.1 · one refund-not-received workflow · synthetic data · reproducible local demo**
 
-CaseLens is an auditable e-commerce dispute review agent and policy regression lab.
+CaseLens is an auditable e-commerce dispute review agent and policy regression
+lab. It turns a customer claim into traceable evidence, a time-correct policy
+citation, a controlled recommendation, and a verified simulated outcome.
 
 CaseLens 是一个可审计的电商争议复核 Agent 与政策回归实验台。
 
-## Core Question
+`Python 3.12` · `FastAPI` · `Pydantic` · `SQLAlchemy / SQLite` ·
+`React / TypeScript` · `pytest`
+
+![CaseLens review workspace showing a synthetic refund dispute and persisted evidence returned by the local product API.](docs/assets/readme/caselens-review-workspace.png)
+
+[Run the local Demo](#run-the-product-api) ·
+[Read the five-minute walkthrough](docs/DEMO.md) ·
+[Inspect the evaluation](docs/EVALUATION.md)
+
+## What the Demo proves
+
+- **Investigate:** a bounded single-agent loop can gather traceable evidence
+  through typed, read-only business tools.
+- **Ground:** the review selects the policy version effective when the dispute
+  occurred before retrieving exact clause citations.
+- **Control:** a high-risk recommendation stops at a backend-enforced human
+  approval gate; an idempotency key protects the simulated action from
+  duplicate state changes.
+- **Verify and replay:** completion depends on an independent read-back of the
+  stored business state, while durable model/tool traces support audit replay.
+
+## How it works
+
+```mermaid
+flowchart LR
+    C["Synthetic case"] --> A["Bounded single-agent loop"]
+    M["Deterministic MockModel"] --> A
+    A --> T["Typed read-only tools"]
+    T --> E["Evidence bundle"]
+    E --> P["Time-filtered policy clauses"]
+    P --> D["Validated DecisionPacket"]
+    D --> H["Human approval"]
+    H --> X["Idempotent simulated action"]
+    X --> V["Read-back verifier"]
+    V --> R["Replay and evaluation"]
+```
+
+The model can request only registered read-only investigation tools. Policy,
+approval, side-effect, idempotency, and verification rules remain deterministic
+backend boundaries outside the model.
+
+## Evaluation snapshot
+
+| V0.1 evaluation item | Committed deterministic result |
+| --- | --- |
+| Dataset | 12 synthetic Golden Cases, 1 dispute type |
+| Rules-only | 6/6 applicable cases passed |
+| Scripted model-only ablation | 0/6 applicable cases passed |
+| Hybrid | 12/12 cases passed |
+| Real-model tokens / cost / latency | `not_measured` |
+
+These results are engineering regression checks over authored synthetic cases,
+not a production accuracy claim or a statistical generalization result. See the
+[methodology and limitations](docs/EVALUATION.md) and the committed
+[Markdown report](backend/evals/results/day15-baseline.md).
+
+## Scope and limitations
+
+- V0.1 implements one `refund_not_received` workflow; the other dispute types
+  remain planned.
+- The case, policy corpus, business records, and Golden Cases are synthetic.
+- The Demo uses a deterministic `MockModel` and simulated refund state; a real
+  model provider and payment provider are not connected.
+- The current deliverable is a reproducible local Demo, not a hosted or
+  production-authorized service.
+- Real-model quality, repeated-sampling stability, token use, cost, and latency
+  have not been measured.
+
+## Core question
 
 How can an agent that operates business tools remain verifiable, reviewable, and replayable when policies change, evidence conflicts, and tools fail?
 
-## Implemented
+## Implementation details
+
+<details>
+<summary>Expand the implemented engineering boundaries</summary>
+
 
 - Python 3.12 backend managed with uv.
 - Pydantic case model with structured validation.
@@ -44,11 +118,11 @@ How can an agent that operates business tools remain verifiable, reviewable, and
 - A bounded single-agent investigation loop that reuses the model protocol,
   read-only Tool Calling executor, structured Tool Results, model traces, and
   safe maximum-step termination.
-- A Day 11 case-review orchestrator that turns a validated case and read-only
+- A case-review orchestrator that turns a validated case and read-only
   investigation into auditable evidence, time-aware policy citations, and a
   validated `DecisionPacket`, with safe paths for missing or conflicting
   evidence and policy no-match.
-- A durable Day 12 resolution workflow with packet-bound human approval,
+- A durable resolution workflow with packet-bound human approval,
   SQLite-backed simulated refund completion, resource-scoped idempotency, and
   read-back verification before successful completion.
 - A versioned FastAPI product boundary for case reads, synchronous review,
@@ -57,13 +131,15 @@ How can an agent that operates business tools remain verifiable, reviewable, and
 - Durable full-review snapshots and explicit review-to-resolution lineage, plus
   a deterministic synthetic demo runtime that exercises the real orchestration
   boundaries without calling an external model or payment provider.
-- A React and TypeScript review workspace that displays the real case,
+- A React and TypeScript review workspace that displays the persisted synthetic case,
   evidence, policy citation, approval gate, execution, verification, and
   durable model/tool trace returned by the product API.
 - A deterministic offline evaluation harness with 12 synthetic Golden Cases,
   independent grading, Rules-only, scripted model-only, and Hybrid baselines,
   explicit failure cases, and byte-stable JSON/Markdown reports.
 - Automated pytest coverage and Ruff checks.
+
+</details>
 
 ## Planned after V0.1
 
